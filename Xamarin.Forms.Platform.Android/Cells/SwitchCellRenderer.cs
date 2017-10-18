@@ -3,6 +3,7 @@ using Android.Content;
 using Android.Views;
 using AView = Android.Views.View;
 using ASwitch = Android.Widget.Switch;
+using Android.OS;
 
 namespace Xamarin.Forms.Platform.Android
 {
@@ -24,6 +25,7 @@ namespace Xamarin.Forms.Platform.Android
 			UpdateChecked();
 			UpdateHeight();
 			UpdateIsEnabled(_view, cell);
+			UpdateLayoutDirection();
 
 			return _view;
 		}
@@ -56,6 +58,17 @@ namespace Xamarin.Forms.Platform.Android
 		void UpdateHeight()
 		{
 			_view.SetRenderHeight(Cell.RenderHeight);
+		}
+
+		void UpdateLayoutDirection()
+		{
+			if (ViewController == null || (int)Build.VERSION.SdkInt < 17)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				_view.LayoutDirection = LayoutDirection.Rtl;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				_view.LayoutDirection = LayoutDirection.Ltr;
 		}
 
 		void UpdateText()

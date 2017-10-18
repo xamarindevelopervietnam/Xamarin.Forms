@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Android.Content;
 using Android.Views;
+using Android.OS;
 
 namespace Xamarin.Forms.Platform.Android
 {
@@ -11,6 +12,7 @@ namespace Xamarin.Forms.Platform.Android
 			var result = (BaseCellView)base.GetCellCore(item, convertView, parent, context);
 
 			UpdateImage();
+			UpdateLayoutDirection();
 
 			return result;
 		}
@@ -32,6 +34,17 @@ namespace Xamarin.Forms.Platform.Android
 			}
 			else
 				View.SetImageVisible(false);
+		}
+
+		void UpdateLayoutDirection()
+		{
+			if (ViewController == null || (int)Build.VERSION.SdkInt < 17)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				View.LayoutDirection = LayoutDirection.Rtl;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				View.LayoutDirection = LayoutDirection.Ltr;
 		}
 	}
 }
