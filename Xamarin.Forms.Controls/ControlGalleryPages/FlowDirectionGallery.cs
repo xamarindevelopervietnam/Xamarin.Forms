@@ -144,7 +144,8 @@ namespace Xamarin.Forms.Controls
 
 			var stack = new StackLayout
 			{
-				Children = {        flipButton,
+				Children = {        new Label { Text = $"Device Direction: {DeviceDirection}" },
+									flipButton,
 									grid,
 									new Label { Text = "TableView", FontSize = 10, TextColor = Color.DarkGray },
 									tbl,
