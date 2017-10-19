@@ -130,7 +130,10 @@ namespace Xamarin.Forms.Platform.Android
 			if (_editText == null)
 				return;
 
-			_editText.Gravity = Element.HorizontalTextAlignment.ToHorizontalGravityFlags() | Xamarin.Forms.TextAlignment.Center.ToVerticalGravityFlags();
+			if ((int)Build.VERSION.SdkInt < 17)
+				_editText.Gravity = Element.HorizontalTextAlignment.ToHorizontalGravityFlags() | Xamarin.Forms.TextAlignment.Center.ToVerticalGravityFlags();
+			else
+				_editText.TextAlignment = Element.HorizontalTextAlignment.ToTextAlignment();
 		}
 
 		void UpdateCancelButtonColor()

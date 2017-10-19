@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using Android.OS;
 using Android.Views;
 using Xamarin.Forms.Internals;
 using AView = Android.Views.View;
@@ -29,6 +30,8 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 		}
 
 		VisualElement Element => _renderer?.Element;
+
+		IViewController ViewController => Element as View;
 		
 		AView Control => _renderer?.View;
 
@@ -43,6 +46,17 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 				return;
 
 			Control.SetBackgroundColor((color ?? Element.BackgroundColor).ToAndroid());
+		}
+
+		public void UpdateLayoutDirection()
+		{
+			if (_disposed || ViewController == null || Control == null || (int)Build.VERSION.SdkInt < 17)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.LayoutDirection = LayoutDirection.Rtl;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.LayoutDirection = LayoutDirection.Ltr;
 		}
 
 	    public bool OnTouchEvent(MotionEvent e)
@@ -88,6 +102,7 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 			{
 				e.NewElement.PropertyChanged += OnElementPropertyChanged;
 				UpdateBackgroundColor();
+				UpdateLayoutDirection();
 			}
 
 			EffectUtilities.RegisterEffectControlProvider(this, e.OldElement, e.NewElement);

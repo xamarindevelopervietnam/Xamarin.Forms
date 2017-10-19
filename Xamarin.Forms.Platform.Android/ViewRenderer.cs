@@ -22,6 +22,8 @@ namespace Xamarin.Forms.Platform.Android
 
 	public abstract class ViewRenderer<TView, TNativeView> : VisualElementRenderer<TView>, AView.IOnFocusChangeListener where TView : View where TNativeView : AView
 	{
+		IViewController ViewController => Element;
+
 		protected ViewRenderer(Context context) : base(context)
 		{
 		}
@@ -319,6 +321,7 @@ namespace Xamarin.Forms.Platform.Android
 			Control.OnFocusChangeListener = this;
 
 			UpdateIsEnabled();
+			UpdateLayoutDirection();
 			SetLabeledBy();
 		}
 
@@ -344,6 +347,17 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			if (Control != null)
 				Control.Enabled = Element.IsEnabled;
+		}
+
+		void UpdateLayoutDirection()
+		{
+			if (ViewController == null || Control == null || (int)Build.VERSION.SdkInt < 17)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.LayoutDirection = LayoutDirection.Rtl;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.LayoutDirection = LayoutDirection.Ltr;
 		}
 	}
 }

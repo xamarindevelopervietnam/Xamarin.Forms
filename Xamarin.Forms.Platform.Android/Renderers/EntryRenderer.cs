@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using Android.Content;
 using Android.Content.Res;
+using Android.OS;
 using Android.Text;
 using Android.Text.Method;
 using Android.Util;
@@ -157,7 +158,10 @@ namespace Xamarin.Forms.Platform.Android
 
 		void UpdateAlignment()
 		{
-			Control.Gravity = Element.HorizontalTextAlignment.ToHorizontalGravityFlags();
+			if ((int)Build.VERSION.SdkInt < 17)
+				Control.Gravity = Element.HorizontalTextAlignment.ToHorizontalGravityFlags();
+			else
+				Control.TextAlignment = Element.HorizontalTextAlignment.ToTextAlignment();
 		}
 
 		void UpdateColor()
