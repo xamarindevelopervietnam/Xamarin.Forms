@@ -32,6 +32,8 @@ namespace Xamarin.Forms.Platform.MacOS
 #endif
 		NativeColor _defaultColor;
 
+		IViewController ElementViewController => Element;
+
 		public TNativeView Control { get; private set; }
 #if __MOBILE__
 		public override void LayoutSubviews()
@@ -96,6 +98,7 @@ namespace Xamarin.Forms.Platform.MacOS
 			}
 
 			UpdateIsEnabled();
+			UpdateFlowDirection();
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -209,6 +212,8 @@ namespace Xamarin.Forms.Platform.MacOS
 
 			UpdateIsEnabled();
 
+			UpdateFlowDirection();
+
 			AddSubview(uiview);
 		}
 
@@ -228,6 +233,25 @@ namespace Xamarin.Forms.Platform.MacOS
 			if (uiControl == null)
 				return;
 			uiControl.Enabled = Element.IsEnabled;
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ElementViewController == null || Control == null)
+				return;
+
+#if __MOBILE__
+
+			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
+			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
+#else
+			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.RightToLeft;
+			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.LeftToRight;
+#endif
 		}
 
 		void ViewOnFocusChangeRequested(object sender, VisualElement.FocusRequestArgs focusRequestArgs)

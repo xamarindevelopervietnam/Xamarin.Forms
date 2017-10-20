@@ -13,6 +13,7 @@ namespace Xamarin.Forms.Platform.iOS
 		bool _disposed;
 
 		IElementController ElementController => Element as IElementController;
+		IViewController ElementViewController => Element;
 
 		protected override void Dispose(bool disposing)
 		{
@@ -75,6 +76,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 				UpdateTime();
 				UpdateTextColor();
+				UpdateFlowDirection();
 			}
 
 			base.OnElementChanged(e);
@@ -104,6 +106,23 @@ namespace Xamarin.Forms.Platform.iOS
 		void OnValueChanged(object sender, EventArgs e)
 		{
 			ElementController.SetValueFromRenderer(TimePicker.TimeProperty, _picker.Date.ToDateTime() - new DateTime(1, 1, 1));
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ElementViewController == null || Control == null)
+				return;
+
+			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			{
+				Control.HorizontalAlignment = UIControlContentHorizontalAlignment.Right;
+				(Control as UITextField).TextAlignment = UITextAlignment.Right;
+			}
+			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			{
+				Control.HorizontalAlignment = UIControlContentHorizontalAlignment.Left;
+				(Control as UITextField).TextAlignment = UITextAlignment.Left;
+			}
 		}
 
 		void UpdateTextColor()

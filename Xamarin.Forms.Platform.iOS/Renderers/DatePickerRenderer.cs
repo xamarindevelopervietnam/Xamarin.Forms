@@ -25,6 +25,7 @@ namespace Xamarin.Forms.Platform.iOS
 		bool _disposed;
 
 		IElementController ElementController => Element as IElementController;
+		IViewController ElementViewController => Element;
 
 		protected override void OnElementChanged(ElementChangedEventArgs<DatePicker> e)
 		{
@@ -63,6 +64,7 @@ namespace Xamarin.Forms.Platform.iOS
 			UpdateMaximumDate();
 			UpdateMinimumDate();
 			UpdateTextColor();
+			UpdateFlowDirection();
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -100,6 +102,23 @@ namespace Xamarin.Forms.Platform.iOS
 				_picker.SetDate(Element.Date.ToNSDate(), animate);
 
 			Control.Text = Element.Date.ToString(Element.Format);
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ElementViewController == null || Control == null)
+				return;
+
+			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			{
+				Control.HorizontalAlignment = UIControlContentHorizontalAlignment.Right;
+				(Control as UITextField).TextAlignment = UITextAlignment.Right;
+			}
+			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			{
+				Control.HorizontalAlignment = UIControlContentHorizontalAlignment.Left;
+				(Control as UITextField).TextAlignment = UITextAlignment.Left;
+			}
 		}
 
 		void UpdateMaximumDate()

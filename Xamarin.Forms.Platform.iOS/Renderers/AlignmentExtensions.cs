@@ -6,14 +6,21 @@ namespace Xamarin.Forms.Platform.iOS
 	{
 		internal static UITextAlignment ToNativeTextAlignment(this TextAlignment alignment)
 		{
+			var isLtr = flowDirection.HasFlag(EffectiveFlowDirection.LeftToRight);
 			switch (alignment)
 			{
 				case TextAlignment.Center:
 					return UITextAlignment.Center;
 				case TextAlignment.End:
-					return UITextAlignment.Right;
+					if (isLtr)
+						return UITextAlignment.Right;
+					else
+						return UITextAlignment.Left;
 				default:
-					return UITextAlignment.Left;
+					if (isLtr)
+						return UITextAlignment.Left;
+					else
+						return UITextAlignment.Natural;
 			}
 		}
 	}

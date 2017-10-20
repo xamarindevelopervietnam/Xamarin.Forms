@@ -8,9 +8,10 @@ namespace Xamarin.Forms.Platform.iOS
 	public class EditorRenderer : ViewRenderer<Editor, UITextView>
 	{
 		bool _disposed;
-        IEditorController ElementController => Element;
+		IEditorController ElementController => Element;
+		IViewController ElementViewController => Element;
 
-        protected override void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			if (_disposed)
 				return;
@@ -51,7 +52,7 @@ namespace Xamarin.Forms.Platform.iOS
 					var doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, (o, a) =>
 					{
 						Control.ResignFirstResponder();
-                        ElementController.SendCompleted();
+						ElementController.SendCompleted();
 					});
 					accessoryView.SetItems(new[] { spacer, doneButton }, false);
 					Control.InputAccessoryView = accessoryView;
@@ -67,6 +68,7 @@ namespace Xamarin.Forms.Platform.iOS
 			UpdateTextColor();
 			UpdateKeyboard();
 			UpdateEditable();
+			UpdateTextAlignment();
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -133,6 +135,17 @@ namespace Xamarin.Forms.Platform.iOS
 			// ReSharper disable once RedundantCheckBeforeAssignment
 			if (Control.Text != Element.Text)
 				Control.Text = Element.Text;
+		}
+
+		void UpdateTextAlignment()
+		{
+			if (ElementViewController == null || Control == null)
+				return;
+
+			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.TextAlignment = UITextAlignment.Right;
+			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.TextAlignment = UITextAlignment.Left;
 		}
 
 		void UpdateTextColor()
