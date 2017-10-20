@@ -30,7 +30,7 @@ namespace Xamarin.Forms.Platform.Android
 			UpdateText();
 			UpdateIsEnabled();
 			UpdateHeight();
-			UpdateLayoutDirection();
+			UpdateFlowDirection();
 
 			_view.TextChanged = OnTextChanged;
 			_view.EditingCompleted = OnEditingCompleted;
@@ -123,7 +123,7 @@ namespace Xamarin.Forms.Platform.Android
 			_view.SetLabelTextColor(((EntryCell)Cell).LabelColor, global::Android.Resource.Color.PrimaryTextDark);
 		}
 
-		void UpdateLayoutDirection()
+		void UpdateFlowDirection()
 		{
 			if (ViewController == null || (int)Build.VERSION.SdkInt < 17)
 				return;

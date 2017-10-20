@@ -48,7 +48,7 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 			Control.SetBackgroundColor((color ?? Element.BackgroundColor).ToAndroid());
 		}
 
-		public void UpdateLayoutDirection()
+		public void UpdateFlowDirection()
 		{
 			if (_disposed || ViewController == null || Control == null || (int)Build.VERSION.SdkInt < 17)
 				return;
@@ -102,7 +102,7 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 			{
 				e.NewElement.PropertyChanged += OnElementPropertyChanged;
 				UpdateBackgroundColor();
-				UpdateLayoutDirection();
+				UpdateFlowDirection();
 			}
 
 			EffectUtilities.RegisterEffectControlProvider(this, e.OldElement, e.NewElement);

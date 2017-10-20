@@ -321,7 +321,7 @@ namespace Xamarin.Forms.Platform.Android
 			Control.OnFocusChangeListener = this;
 
 			UpdateIsEnabled();
-			UpdateLayoutDirection();
+			UpdateFlowDirection();
 			SetLabeledBy();
 		}
 
@@ -349,7 +349,7 @@ namespace Xamarin.Forms.Platform.Android
 				Control.Enabled = Element.IsEnabled;
 		}
 
-		void UpdateLayoutDirection()
+		void UpdateFlowDirection()
 		{
 			if (ViewController == null || Control == null || (int)Build.VERSION.SdkInt < 17)
 				return;

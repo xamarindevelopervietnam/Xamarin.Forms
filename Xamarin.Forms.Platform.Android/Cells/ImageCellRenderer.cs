@@ -12,7 +12,7 @@ namespace Xamarin.Forms.Platform.Android
 			var result = (BaseCellView)base.GetCellCore(item, convertView, parent, context);
 
 			UpdateImage();
-			UpdateLayoutDirection();
+			UpdateFlowDirection();
 
 			return result;
 		}
@@ -36,7 +36,7 @@ namespace Xamarin.Forms.Platform.Android
 				View.SetImageVisible(false);
 		}
 
-		void UpdateLayoutDirection()
+		void UpdateFlowDirection()
 		{
 			if (ViewController == null || (int)Build.VERSION.SdkInt < 17)
 				return;

@@ -21,7 +21,7 @@ namespace Xamarin.Forms.Platform.Android
 			UpdateDetailText();
 			UpdateHeight();
 			UpdateIsEnabled();
-			UpdateLayoutDirection();
+			UpdateFlowDirection();
 			View.SetImageVisible(false);
 
 			return View;
@@ -57,7 +57,7 @@ namespace Xamarin.Forms.Platform.Android
 			View.SetIsEnabled(cell.IsEnabled);
 		}
 
-		void UpdateLayoutDirection()
+		void UpdateFlowDirection()
 		{
 			if (ViewController == null || (int)Build.VERSION.SdkInt < 17)
 				return;

@@ -25,7 +25,7 @@ namespace Xamarin.Forms.Platform.Android
 			UpdateChecked();
 			UpdateHeight();
 			UpdateIsEnabled(_view, cell);
-			UpdateLayoutDirection();
+			UpdateFlowDirection();
 
 			return _view;
 		}
@@ -60,7 +60,7 @@ namespace Xamarin.Forms.Platform.Android
 			_view.SetRenderHeight(Cell.RenderHeight);
 		}
 
-		void UpdateLayoutDirection()
+		void UpdateFlowDirection()
 		{
 			if (ViewController == null || (int)Build.VERSION.SdkInt < 17)
 				return;
