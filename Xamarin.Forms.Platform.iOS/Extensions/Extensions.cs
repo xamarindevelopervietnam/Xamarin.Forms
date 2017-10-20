@@ -66,5 +66,18 @@ namespace Xamarin.Forms.Platform.iOS
 					return DeviceOrientation.Other;
 			}
 		}
+
+		internal static FlowDirection ToFlowDirection(this UIUserInterfaceLayoutDirection direction)
+		{
+			switch (direction)
+			{
+				case UIUserInterfaceLayoutDirection.LeftToRight:
+					return FlowDirection.LeftToRight;
+				case UIUserInterfaceLayoutDirection.RightToLeft:
+					return FlowDirection.RightToLeft;
+				default:
+					return FlowDirection.MatchParent;
+			}
+		}
 	}
 }

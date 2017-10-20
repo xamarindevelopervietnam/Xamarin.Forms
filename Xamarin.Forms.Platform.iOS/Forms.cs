@@ -161,9 +161,13 @@ namespace Xamarin.Forms
 				_notification = UIDevice.Notifications.ObserveOrientationDidChange((sender, args) => CurrentOrientation = UIDevice.CurrentDevice.Orientation.ToDeviceOrientation());
 				_scalingFactor = UIScreen.MainScreen.Scale;
 				_scaledScreenSize = new Size(UIScreen.MainScreen.Bounds.Width, UIScreen.MainScreen.Bounds.Height);
+
+				CurrentFlowDirection = UIApplication.SharedApplication.UserInterfaceLayoutDirection.ToFlowDirection();
+
 #else
 				_scalingFactor = NSScreen.MainScreen.BackingScaleFactor;
 				_scaledScreenSize = new Size(NSScreen.MainScreen.Frame.Width, NSScreen.MainScreen.Frame.Height);
+				CurrentFlowDirection = NSApplication.SharedApplication.UserInterfaceLayoutDirection.ToFlowDirection();
 #endif
 				PixelScreenSize = new Size(_scaledScreenSize.Width * _scalingFactor, _scaledScreenSize.Height * _scalingFactor);
 			}
