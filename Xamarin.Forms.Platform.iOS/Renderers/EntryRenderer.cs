@@ -30,6 +30,7 @@ namespace Xamarin.Forms.Platform.iOS
 		}
 
 		IElementController ElementController => Element as IElementController;
+		IViewController ElementViewController => Element;
 
 		protected override void Dispose(bool disposing)
 		{
@@ -148,7 +149,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void UpdateAlignment()
 		{
-			Control.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment();
+			Control.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ElementViewController.EffectiveFlowDirection);
 		}
 
 		void UpdateColor()

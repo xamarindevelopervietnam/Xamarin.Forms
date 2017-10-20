@@ -83,7 +83,9 @@ namespace Xamarin.Forms.Platform.iOS
 
 		static void UpdateHorizontalTextAlignment(EntryCellTableViewCell cell, EntryCell entryCell)
 		{
-			cell.TextField.TextAlignment = entryCell.HorizontalTextAlignment.ToNativeTextAlignment();
+			IViewController viewController = entryCell.Parent as View;
+
+			cell.TextField.TextAlignment = entryCell.HorizontalTextAlignment.ToNativeTextAlignment(viewController?.EffectiveFlowDirection ?? EffectiveFlowDirection.Implicit);
 		}
 
 		static void UpdateIsEnabled(EntryCellTableViewCell cell, EntryCell entryCell)

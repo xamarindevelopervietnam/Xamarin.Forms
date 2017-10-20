@@ -16,6 +16,7 @@ namespace Xamarin.Forms.Platform.iOS
 		UITextField _textField;
 
 		IElementController ElementController => Element as IElementController;
+		IViewController ElementViewController => Element;
 
 		protected override void Dispose(bool disposing)
 		{
@@ -161,7 +162,7 @@ namespace Xamarin.Forms.Platform.iOS
 			if (_textField == null)
 				return;
 
-			_textField.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment();
+			_textField.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ElementViewController.EffectiveFlowDirection);
 		}
 
 		void UpdateCancelButton()

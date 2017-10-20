@@ -4,7 +4,7 @@ namespace Xamarin.Forms.Platform.iOS
 {
 	internal static class AlignmentExtensions
 	{
-		internal static UITextAlignment ToNativeTextAlignment(this TextAlignment alignment)
+		internal static UITextAlignment ToNativeTextAlignment(this TextAlignment alignment, EffectiveFlowDirection flowDirection)
 		{
 			var isLtr = flowDirection.HasFlag(EffectiveFlowDirection.LeftToRight);
 			switch (alignment)
