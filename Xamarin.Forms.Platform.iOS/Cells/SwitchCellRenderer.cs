@@ -43,6 +43,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 			UpdateBackground(tvc, item);
 			UpdateIsEnabled(tvc, boolCell);
+			UpdateFlowDirection(tvc, boolCell);
 
 			return tvc;
 		}
@@ -74,6 +75,29 @@ namespace Xamarin.Forms.Platform.iOS
 
 			if (realCell != null)
 				((SwitchCell)realCell.Cell).On = sw.On;
+		}
+
+		void UpdateFlowDirection(CellTableViewCell cell, SwitchCell switchCell)
+		{
+			IViewController ElementViewController = switchCell.Parent as View;
+
+			var uiSwitch = cell.AccessoryView as UISwitch;
+
+			if (ElementViewController == null || uiSwitch == null)
+				return;
+
+#if __MOBILE__
+
+			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				uiSwitch.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
+			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				uiSwitch.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
+#else
+			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				uiSwitch.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.RightToLeft;
+			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				uiSwitch.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.LeftToRight;
+#endif
 		}
 
 		void UpdateIsEnabled(CellTableViewCell cell, SwitchCell switchCell)
