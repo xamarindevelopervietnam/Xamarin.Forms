@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Xaml;
@@ -23,6 +24,7 @@ namespace Xamarin.Forms.Platform.WinRT
 			_information = DisplayInformation.GetForCurrentView();
 			_information.OrientationChanged += OnOrientationChanged;
 			CurrentOrientation = GetDeviceOrientation(_information.CurrentOrientation);
+			CurrentFlowDirection = GetFlowDirection();
 		}
 
 		public override Size PixelScreenSize
@@ -110,6 +112,17 @@ namespace Xamarin.Forms.Platform.WinRT
 		void OnOrientationChanged(DisplayInformation sender, object args)
 		{
 			CurrentOrientation = GetDeviceOrientation(sender.CurrentOrientation);
+		}
+
+		FlowDirection GetFlowDirection()
+		{
+			string resourceFlowDirection = ResourceContext.GetForCurrentView().QualifierValues["LayoutDirection"];
+			if (resourceFlowDirection == "LTR")
+				return FlowDirection.LeftToRight;
+			else if (resourceFlowDirection == "RTL")
+				return FlowDirection.RightToLeft;
+
+			return FlowDirection.MatchParent;
 		}
 	}
 }
