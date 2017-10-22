@@ -38,6 +38,8 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		IElementController ElementController => Element;
 
+		IViewController ElementViewController => Element;
+
 		IEntryController EntryController => Element;
 
 		protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
@@ -152,7 +154,7 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		void UpdateAlignment()
 		{
-			Control.Alignment = Element.HorizontalTextAlignment.ToNativeTextAlignment();
+			Control.Alignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ElementViewController.EffectiveFlowDirection);
 		}
 
 		void UpdateColor()

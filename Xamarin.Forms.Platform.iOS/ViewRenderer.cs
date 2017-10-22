@@ -248,9 +248,9 @@ namespace Xamarin.Forms.Platform.MacOS
 				Control.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
 #else
 			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
-				Control.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.RightToLeft;
+				Control.UserInterfaceLayoutDirection = AppKit.NSUserInterfaceLayoutDirection.RightToLeft;
 			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
-				Control.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.LeftToRight;
+				Control.UserInterfaceLayoutDirection = AppKit.NSUserInterfaceLayoutDirection.LeftToRight;
 #endif
 		}
 
