@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms.Internals;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 #if WINDOWS_UWP
 
@@ -263,6 +264,7 @@ namespace Xamarin.Forms.Platform.WinRT
 				newCell.SendAppearing();
 
 				UpdateContent(newCell);
+				UpdateFlowDirection(newCell);
 				SetupContextMenu();
 
 				newCell.PropertyChanged += _propertyChangedHandler;
@@ -315,6 +317,22 @@ namespace Xamarin.Forms.Platform.WinRT
 			}
 
 			((FrameworkElement)Content).DataContext = newCell;
+		}
+
+		void UpdateFlowDirection(Cell newCell)
+		{
+			if (newCell is ViewCell)
+				return;
+
+			IViewController controller = newCell.Parent as View;
+
+			if (controller == null)
+				return;
+
+			if (controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				FlowDirection = WFlowDirection.RightToLeft;
+			else if (controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				FlowDirection = WFlowDirection.LeftToRight;
 		}
 	}
 }
