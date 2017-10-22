@@ -26,6 +26,8 @@ namespace Xamarin.Forms.Platform.WinRT
 		Brush _defaultTextColorFocusBrush;
 		Brush _defaultPlaceholderColorFocusBrush;
 
+		IViewController ViewController => Element;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
 		{
 			base.OnElementChanged(e);
@@ -126,7 +128,7 @@ namespace Xamarin.Forms.Platform.WinRT
 
 		void UpdateAlignment()
 		{
-			Control.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment();
+			Control.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ViewController.EffectiveFlowDirection);
 		}
 
 		void UpdateFont()

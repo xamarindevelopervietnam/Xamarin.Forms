@@ -16,6 +16,8 @@ namespace Xamarin.Forms.Platform.UWP
 
 		FormsTextBox _queryTextBox;
 
+		IViewController ViewController => Element;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<SearchBar> e)
 		{
 			if (e.NewElement != null)
@@ -92,7 +94,7 @@ namespace Xamarin.Forms.Platform.UWP
 			if (_queryTextBox == null)
 				return;
 
-			_queryTextBox.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment();
+			_queryTextBox.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ViewController.EffectiveFlowDirection);
 		}
 
 		void UpdateCancelButtonColor()

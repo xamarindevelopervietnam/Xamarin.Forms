@@ -3,6 +3,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms.Internals;
+using WTextAlignment = Windows.UI.Xaml.TextAlignment;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 #if WINDOWS_UWP
 
@@ -20,6 +22,7 @@ namespace Xamarin.Forms.Platform.WinRT
 		Brush _defaultTextColorFocusBrush;
 
 		IEditorController ElementController => Element;
+		IViewController ViewController => Element;
 
 		protected override void OnElementChanged(ElementChangedEventArgs<Editor> e)
 		{
@@ -44,6 +47,8 @@ namespace Xamarin.Forms.Platform.WinRT
 				UpdateInputScope();
 				UpdateTextColor();
 				UpdateFont();
+				UpdateTextAlignment();
+				UpdateFlowDirection();
 			}
 
 			base.OnElementChanged(e);
@@ -174,6 +179,17 @@ namespace Xamarin.Forms.Platform.WinRT
 			Control.SelectionStart = Control.Text.Length;
 		}
 
+		void UpdateTextAlignment()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.TextAlignment = WTextAlignment.Right;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.TextAlignment = WTextAlignment.Left;
+		}
+
 		void UpdateTextColor()
 		{
 			Color textColor = Element.TextColor;
@@ -183,6 +199,17 @@ namespace Xamarin.Forms.Platform.WinRT
 
 			BrushHelpers.UpdateColor(textColor, ref _defaultTextColorFocusBrush,
 				() => Control.ForegroundFocusBrush, brush => Control.ForegroundFocusBrush = brush);
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.FlowDirection = WFlowDirection.RightToLeft;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 	}
 }

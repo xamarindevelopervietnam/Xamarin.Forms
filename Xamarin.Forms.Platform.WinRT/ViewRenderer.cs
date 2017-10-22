@@ -1,6 +1,7 @@
 ﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 #if WINDOWS_UWP
 
@@ -17,6 +18,8 @@ namespace Xamarin.Forms.Platform.WinRT
 		string _defaultAutomationPropertiesHelpText;
 		UIElement _defaultAutomationPropertiesLabeledBy;
 
+		IViewController ViewController => Element;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<TElement> e)
 		{
 			base.OnElementChanged(e);
@@ -24,6 +27,7 @@ namespace Xamarin.Forms.Platform.WinRT
 			if (e.NewElement != null)
 			{
 				UpdateBackgroundColor();
+				UpdateFlowDirection();
 			}
 		}
 
@@ -130,6 +134,17 @@ namespace Xamarin.Forms.Platform.WinRT
 				Control.SetValue(Windows.UI.Xaml.Automation.AutomationProperties.LabeledByProperty, nativeElement);
 			else
 				Control.SetValue(Windows.UI.Xaml.Automation.AutomationProperties.LabeledByProperty, _defaultAutomationPropertiesLabeledBy);
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.FlowDirection = WFlowDirection.RightToLeft;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 	}
 }

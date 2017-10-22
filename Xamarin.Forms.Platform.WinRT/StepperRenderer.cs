@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 #if WINDOWS_UWP
 
@@ -11,6 +12,8 @@ namespace Xamarin.Forms.Platform.WinRT
 {
 	public class StepperRenderer : ViewRenderer<Stepper, StepperControl>
 	{
+		IViewController ViewController => Element;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<Stepper> e)
 		{
 			base.OnElementChanged(e);
@@ -26,7 +29,8 @@ namespace Xamarin.Forms.Platform.WinRT
 				UpdateMaximum();
 				UpdateMinimum();
 				UpdateValue();
-				UpdateIncrement();
+				UpdateIncrement(); 
+				UpdateFlowDirection();
 			}
 		}
 
@@ -57,6 +61,17 @@ namespace Xamarin.Forms.Platform.WinRT
 		void OnControlValue(object sender, EventArgs e)
 		{
 			Element.SetValueCore(Stepper.ValueProperty, Control.Value);
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.FlowDirection = WFlowDirection.RightToLeft;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 
 		void UpdateIncrement()

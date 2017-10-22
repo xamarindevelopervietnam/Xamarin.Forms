@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 #if WINDOWS_UWP
 
@@ -12,6 +13,8 @@ namespace Xamarin.Forms.Platform.WinRT
 {
 	public class SwitchRenderer : ViewRenderer<Switch, ToggleSwitch>
 	{
+		IViewController ViewController => Element;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<Switch> e)
 		{
 			base.OnElementChanged(e);
@@ -29,6 +32,8 @@ namespace Xamarin.Forms.Platform.WinRT
 				}
 
 				Control.IsOn = Element.IsToggled;
+
+				UpdateFlowDirection();
 			}
 		}
 
@@ -47,6 +52,17 @@ namespace Xamarin.Forms.Platform.WinRT
 		void OnNativeToggled(object sender, RoutedEventArgs routedEventArgs)
 		{
 			((IElementController)Element).SetValueFromRenderer(Switch.IsToggledProperty, Control.IsOn);
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.FlowDirection = WFlowDirection.RightToLeft;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 	}
 }

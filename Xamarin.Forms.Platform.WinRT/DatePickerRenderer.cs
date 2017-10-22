@@ -4,6 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms.Internals;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 #if WINDOWS_UWP
 
@@ -16,6 +17,8 @@ namespace Xamarin.Forms.Platform.WinRT
 	public class DatePickerRenderer : ViewRenderer<DatePicker, Windows.UI.Xaml.Controls.DatePicker>
 	{
 		Brush _defaultBrush;
+
+		IViewController ViewController => Element;
 
 		protected override void Dispose(bool disposing)
 		{
@@ -43,6 +46,7 @@ namespace Xamarin.Forms.Platform.WinRT
 				UpdateMinimumDate();
 				UpdateMaximumDate();
 				UpdateDate(e.NewElement.Date);
+				UpdateFlowDirection();
 			}
 
 			base.OnElementChanged(e);
@@ -85,6 +89,17 @@ namespace Xamarin.Forms.Platform.WinRT
 		void UpdateDate(DateTime date)
 		{
 			Control.Date = date;
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.FlowDirection = WFlowDirection.RightToLeft;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 
 		void UpdateMaximumDate()

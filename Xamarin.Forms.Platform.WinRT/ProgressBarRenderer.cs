@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Windows.UI.Xaml.Controls.Primitives;
 using Xamarin.Forms.Internals;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 #if WINDOWS_UWP
 
@@ -12,6 +13,8 @@ namespace Xamarin.Forms.Platform.WinRT
 {
 	public class ProgressBarRenderer : ViewRenderer<ProgressBar, Windows.UI.Xaml.Controls.ProgressBar>
 	{
+		IViewController ViewController => Element;
+
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
@@ -41,6 +44,7 @@ namespace Xamarin.Forms.Platform.WinRT
 				}
 
 				Control.Value = e.NewElement.Progress;
+				UpdateFlowDirection();
 			}
 		}
 
@@ -55,6 +59,17 @@ namespace Xamarin.Forms.Platform.WinRT
 		void ProgressBarOnValueChanged(object sender, RangeBaseValueChangedEventArgs rangeBaseValueChangedEventArgs)
 		{
 			((IVisualElementController)Element)?.InvalidateMeasure(InvalidationTrigger.MeasureChanged);
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.FlowDirection = WFlowDirection.RightToLeft;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 	}
 }

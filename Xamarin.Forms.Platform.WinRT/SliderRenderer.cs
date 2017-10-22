@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 #if WINDOWS_UWP
 
@@ -13,6 +14,8 @@ namespace Xamarin.Forms.Platform.WinRT
 {
 	public class SliderRenderer : ViewRenderer<Slider, Windows.UI.Xaml.Controls.Slider>
 	{
+		IViewController ViewController => Element;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<Slider> e)
 		{
 			base.OnElementChanged(e);
@@ -53,6 +56,7 @@ namespace Xamarin.Forms.Platform.WinRT
 				double stepping = Math.Min((e.NewElement.Maximum - e.NewElement.Minimum) / 10, 1);
 				Control.StepFrequency = stepping;
 				Control.SmallChange = stepping;
+				UpdateFlowDirection();
 			}
 		}
 
@@ -85,6 +89,17 @@ namespace Xamarin.Forms.Platform.WinRT
 					Control.ClearValue(Windows.UI.Xaml.Controls.Control.BackgroundProperty);
 				}
 			}
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.FlowDirection = WFlowDirection.RightToLeft;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 
 		protected override bool PreventGestureBubbling { get; set; } = true;
