@@ -153,11 +153,34 @@ namespace Xamarin.Forms.Controls
 			srch.WidthRequest = 200;
 			srch.Text = "Some text";
 
-			var tbl = new TableView
+			TableView tbl = new TableView
 			{
-				HorizontalOptions = hOptions,
-				VerticalOptions = LayoutOptions.End,
-				Margin = new Thickness(0, 10),
+				Intent = TableIntent.Menu,
+				Root = new TableRoot
+					{
+						new TableSection("TableView")
+						{
+							new TextCell
+							{
+								Text = "A",
+							},
+
+							new TextCell
+							{
+								Text = "B",
+							},
+
+							new TextCell
+							{
+								Text = "C",
+							},
+
+							new TextCell
+							{
+								Text = "D",
+							},
+						}
+					}
 			};
 
 			var stack = new StackLayout
