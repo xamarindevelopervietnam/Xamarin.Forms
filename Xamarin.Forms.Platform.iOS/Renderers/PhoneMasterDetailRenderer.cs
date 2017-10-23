@@ -25,6 +25,7 @@ namespace Xamarin.Forms.Platform.iOS
 		VisualElementTracker _tracker;
 
 		Page Page => Element as Page;
+		IViewController ElementViewController => Element;
 
 		public PhoneMasterDetailRenderer()
 		{
@@ -241,11 +242,22 @@ namespace Xamarin.Forms.Platform.iOS
 			var masterFrame = frame;
 			masterFrame.Width = (int)(Math.Min(masterFrame.Width, masterFrame.Height) * 0.8);
 
+			var isRTL = ElementViewController?.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft) == true;
+			if (isRTL)
+			{
+				masterFrame.X = (int)(masterFrame.Width * .25);
+			}
+
 			_masterController.View.Frame = masterFrame;
 
 			var target = frame;
 			if (Presented)
 				target.X += masterFrame.Width;
+
+			if (isRTL)
+			{
+				target.X = target.X * -1;
+			}
 
 			if (animated)
 			{
@@ -259,7 +271,7 @@ namespace Xamarin.Forms.Platform.iOS
 			else
 				_detailController.View.Frame = target;
 
-			MasterDetailPage.MasterBounds = new Rectangle(0, 0, masterFrame.Width, masterFrame.Height);
+			MasterDetailPage.MasterBounds = new Rectangle(masterFrame.X, 0, masterFrame.Width, masterFrame.Height);
 			MasterDetailPage.DetailBounds = new Rectangle(0, 0, frame.Width, frame.Height);
 
 			if (Presented)
@@ -341,7 +353,7 @@ namespace Xamarin.Forms.Platform.iOS
 			else
 				return base.ChildViewControllerForStatusBarHidden();
 		}
-		
+
 		void UpdatePanGesture()
 		{
 			var model = (MasterDetailPage)Element;
@@ -358,10 +370,14 @@ namespace Xamarin.Forms.Platform.iOS
 				return;
 			}
 
-			UITouchEventArgs shouldRecieve = (g, t) => !(t.View is UISlider);
+			UITouchEventArgs shouldReceive = (g, t) => !(t.View is UISlider);
 			var center = new PointF();
 			_panGesture = new UIPanGestureRecognizer(g =>
 			{
+				var isRTL = ElementViewController?.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft) == true;
+
+				int directionModifier = isRTL ? -1 : 1;
+
 				switch (g.State)
 				{
 					case UIGestureRecognizerState.Began:
@@ -370,12 +386,18 @@ namespace Xamarin.Forms.Platform.iOS
 					case UIGestureRecognizerState.Changed:
 						var currentPosition = g.LocationInView(g.View);
 						var motion = currentPosition.X - center.X;
+
+						motion = motion * directionModifier;
+
 						var detailView = _detailController.View;
 						var targetFrame = detailView.Frame;
 						if (Presented)
 							targetFrame.X = (nfloat)Math.Max(0, _masterController.View.Frame.Width + Math.Min(0, motion));
 						else
 							targetFrame.X = (nfloat)Math.Min(_masterController.View.Frame.Width, Math.Max(0, motion));
+
+						targetFrame.X = targetFrame.X * directionModifier;
+
 						detailView.Frame = targetFrame;
 						break;
 					case UIGestureRecognizerState.Ended:
@@ -383,14 +405,14 @@ namespace Xamarin.Forms.Platform.iOS
 						var masterFrame = _masterController.View.Frame;
 						if (Presented)
 						{
-							if (detailFrame.X < masterFrame.Width * .75)
+							if (detailFrame.X * directionModifier < masterFrame.Width * .75)
 								Presented = false;
 							else
 								LayoutChildren(true);
 						}
 						else
 						{
-							if (detailFrame.X > masterFrame.Width * .25)
+							if (detailFrame.X * directionModifier > masterFrame.Width * .25)
 								Presented = true;
 							else
 								LayoutChildren(true);
@@ -398,7 +420,7 @@ namespace Xamarin.Forms.Platform.iOS
 						break;
 				}
 			});
-			_panGesture.ShouldReceiveTouch = shouldRecieve;
+			_panGesture.ShouldReceiveTouch = shouldReceive;
 			_panGesture.MaximumNumberOfTouches = 2;
 			View.AddGestureRecognizer(_panGesture);
 		}

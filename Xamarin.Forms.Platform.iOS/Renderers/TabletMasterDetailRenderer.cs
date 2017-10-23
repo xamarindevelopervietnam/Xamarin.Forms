@@ -45,8 +45,8 @@ namespace Xamarin.Forms.Platform.iOS
 
 		bool _disposed;
 		EventTracker _events;
-		InnerDelegate _innerDelegate;
-
+		InnerDelegate _innerDelegate; 
+		nfloat _masterWidth = 0;
 		EventedViewController _masterController;
 
 		MasterDetailPage _masterDetailPage;
@@ -57,6 +57,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 		Page PageController => Element as Page;
 		Element ElementController => Element as Element;
+		IViewController ElementViewController => Element;
 
 		protected MasterDetailPage MasterDetailPage => _masterDetailPage ?? (_masterDetailPage = (MasterDetailPage)Element);
 
@@ -184,8 +185,10 @@ namespace Xamarin.Forms.Platform.iOS
 			var detailsBounds = _detailController.View.Frame;
 			var masterBounds = _masterController.View.Frame;
 
+			_masterWidth = (nfloat)Math.Max(_masterWidth, masterBounds.Width);
+
 			if (!masterBounds.IsEmpty)
-				MasterDetailPage.MasterBounds = new Rectangle(0, 0, masterBounds.Width, masterBounds.Height);
+				MasterDetailPage.MasterBounds = new Rectangle(_masterWidth, 0, _masterWidth, masterBounds.Height);
 
 			if (!detailsBounds.IsEmpty)
 				MasterDetailPage.DetailBounds = new Rectangle(0, 0, detailsBounds.Width, detailsBounds.Height);
@@ -195,6 +198,7 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			base.ViewDidLoad();
 			UpdateBackground();
+			UpdateFlowDirection();
 			_tracker = new VisualElementTracker(this);
 			_events = new EventTracker(this);
 			_events.LoadEvents(NativeView);
@@ -249,6 +253,8 @@ namespace Xamarin.Forms.Platform.iOS
 			var changed = ElementChanged;
 			if (changed != null)
 				changed(this, e);
+
+			_masterWidth = 0;
 		}
 
 		void ClearControllers()
@@ -344,6 +350,17 @@ namespace Xamarin.Forms.Platform.iOS
 
 			_detailController.View.AddSubview(detail.View);
 			_detailController.AddChildViewController(detail);
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ElementViewController == null || NativeView == null)
+				return;
+
+			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				NativeView.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
+			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				NativeView.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
 		}
 
 		class InnerDelegate : UISplitViewControllerDelegate
