@@ -7,7 +7,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
-	public class View : VisualElement, IViewController, IFlowDirectionController
+	public class View : VisualElement, IViewController
 	{
 		public static readonly BindableProperty VerticalOptionsProperty = BindableProperty.Create("VerticalOptions", typeof(LayoutOptions), typeof(View), LayoutOptions.Fill,
 			propertyChanged: (bindable, oldvalue, newvalue) => ((View)bindable).InvalidateMeasureInternal(InvalidationTrigger.VerticalOptionsChanged));
@@ -18,9 +18,6 @@ namespace Xamarin.Forms
 		public static readonly BindableProperty MarginProperty = BindableProperty.Create("Margin", typeof(Thickness), typeof(View), default(Thickness), propertyChanged: MarginPropertyChanged);
 
 		readonly ObservableCollection<IGestureRecognizer> _gestureRecognizers = new ObservableCollection<IGestureRecognizer>();
-		public static readonly BindableProperty FlowDirectionProperty = BindableProperty.Create(nameof(FlowDirection), typeof(FlowDirection), typeof(View), FlowDirection.MatchParent, propertyChanged: FlowDirectionChanged);
-
-		IFlowDirectionController FlowController => this;
 
 		protected internal View()
 		{
@@ -79,14 +76,6 @@ namespace Xamarin.Forms
 			set { SetValue(VerticalOptionsProperty, value); }
 		}
 
-		public FlowDirection FlowDirection
-		{
-			get { return (FlowDirection)GetValue(FlowDirectionProperty); }
-			set { SetValue(FlowDirectionProperty, value); }
-		}
-
-		EffectiveFlowDirection IFlowDirectionController.EffectiveFlowDirection { get; set; } = EffectiveFlowDirection.LeftToRight | EffectiveFlowDirection.Implicit;
-
 		protected override void OnBindingContextChanged()
 		{
 			var gotBindingContext = false;
@@ -110,45 +99,9 @@ namespace Xamarin.Forms
 			base.OnBindingContextChanged();
 		}
 
-		EffectiveFlowDirection IViewController.EffectiveFlowDirection => FlowController.EffectiveFlowDirection;
-
-		static void FlowDirectionChanged(BindableObject bindable, object oldValue, object newValue)
-		{
-			var self = bindable as IFlowDirectionController;
-
-			if (self.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit) && oldValue == newValue)
-				return;
-
-			var newFlowDirection = (FlowDirection)newValue;
-
-			self.EffectiveFlowDirection = newFlowDirection.ToEffectiveFlowDirection(EffectiveFlowDirection.Explicit);
-
-			self.NotifyFlowDirectionChanged();
-		}
-
-		protected override void OnParentSet()
-		{
-			base.OnParentSet();
-
-			FlowController.NotifyFlowDirectionChanged();
-		}
-
 		static void MarginPropertyChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			((View)bindable).InvalidateMeasureInternal(InvalidationTrigger.MarginChanged);
-		}
-
-		void IFlowDirectionController.NotifyFlowDirectionChanged()
-		{
-			SetFlowDirectionFromParent(this);
-
-			foreach (var element in LogicalChildren)
-			{
-				var view = element as IFlowDirectionController;
-				if (view == null)
-					continue;
-				view.NotifyFlowDirectionChanged();
-			}
 		}
 
 		void ValidateGesture(IGestureRecognizer gesture)
