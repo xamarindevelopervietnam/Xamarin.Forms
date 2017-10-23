@@ -31,13 +31,20 @@ namespace Xamarin.Forms.Controls
 			switchCell.SetBinding(SwitchCell.OnProperty, ".");
 			switchCell.SetValue(SwitchCell.TextProperty, "Switch Cell!");
 
-			var viewCell = new DataTemplate(() => new ViewCell
+			var vc= new ViewCell
 			{
 				View = new StackLayout
 				{
-					Children = { new Label { HorizontalOptions = hOptions, Text = "View Cell!" } }
+					Children = { new Label { HorizontalOptions = hOptions, Text = "View Cell! I have context actions." } }
 				}
-			});
+			};
+
+			var a1 = new MenuItem { Text = "First" };
+			vc.ContextActions.Add(a1);
+			var a2 = new MenuItem { Text = "Second" };
+			vc.ContextActions.Add(a2);
+
+			var viewCell = new DataTemplate(() => vc);
 
 			var flipButton = new Button
 			{
