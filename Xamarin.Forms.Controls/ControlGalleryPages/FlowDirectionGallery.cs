@@ -3,13 +3,110 @@ using System.Linq;
 
 namespace Xamarin.Forms.Controls
 {
-	public class FlowDirectionGallery : ContentPage
+
+	public class FlowDirectionGalleryLandingPage : ContentPage
 	{
 		FlowDirection DeviceDirection => Device.Info.CurrentFlowDirection;
 
-		public FlowDirectionGallery()
+		public FlowDirectionGalleryLandingPage()
 		{
-			SetContent(DeviceDirection);
+
+			var np = new Button { Text = "Try NavigationPage", Command = new Command(() => { PushNavigationPage(DeviceDirection); }) };
+			var mdp = new Button { Text = "Try MasterDetailPage", Command = new Command(() => { PushMasterDetailPage(DeviceDirection); }) };
+			var crp = new Button { Text = "Try CarouselPage", Command = new Command(() => { PushCarouselPage(DeviceDirection); }) };
+			var tp = new Button { Text = "Try TabbedPage", Command = new Command(() => { PushTabbedPage(DeviceDirection); }) };
+			var cp = new Button { Text = "Try ContentPage", Command = new Command(() => { PushContentPage(DeviceDirection); }) };
+
+			Content = new StackLayout
+			{
+				Children = {
+					new Label { Text = "Click a button below to swap the MainPage of the app." },
+					np,
+					mdp,
+					crp,
+					tp,
+					cp
+				}
+			};
+		}
+
+		public static void PushNavigationPage(FlowDirection direction)
+		{
+			((App)Application.Current).SetMainPage(new FlowDirectionGalleryNP(direction));
+		}
+
+		public static void PushMasterDetailPage(FlowDirection direction)
+		{
+			((App)Application.Current).SetMainPage(new FlowDirectionGalleryMDP(direction));
+		}
+
+		public static void PushCarouselPage(FlowDirection direction)
+		{
+			((App)Application.Current).SetMainPage(new FlowDirectionGalleryCarP(direction));
+		}
+
+		public static void PushTabbedPage(FlowDirection direction)
+		{
+			((App)Application.Current).SetMainPage(new FlowDirectionGalleryTP(direction));
+		}
+
+		public static void PushContentPage(FlowDirection direction)
+		{
+			((App)Application.Current).SetMainPage(new FlowDirectionGalleryCP(direction)
+			{
+				FlowDirection = direction
+			});
+		}
+	}
+
+	public class FlowDirectionGalleryNP : NavigationPage
+	{
+		public FlowDirectionGalleryNP(FlowDirection direction)
+		{
+			FlowDirection = direction;
+			Navigation.PushAsync(new FlowDirectionGalleryCP(direction));
+		}
+	}
+
+	public class FlowDirectionGalleryMDP : MasterDetailPage
+	{
+		public FlowDirectionGalleryMDP(FlowDirection direction)
+		{
+			FlowDirection = direction;
+			Master = new FlowDirectionGalleryCP(direction) { Title = "Master" };
+			Detail = new FlowDirectionGalleryCP(direction);
+		}
+	}
+
+	public class FlowDirectionGalleryCarP : CarouselPage
+	{
+		public FlowDirectionGalleryCarP(FlowDirection direction)
+		{
+			FlowDirection = direction;
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "1" });
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "2" });
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "3" });
+		}
+	}
+
+	public class FlowDirectionGalleryTP : TabbedPage
+	{
+		public FlowDirectionGalleryTP(FlowDirection direction)
+		{
+			FlowDirection = direction;
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "1" });
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "2" });
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "3" });
+		}
+	}
+
+	public class FlowDirectionGalleryCP : ContentPage
+	{
+		FlowDirection DeviceDirection => Device.Info.CurrentFlowDirection;
+
+		public FlowDirectionGalleryCP(FlowDirection direction)
+		{
+			SetContent(direction);
 		}
 
 		void SetContent(FlowDirection direction)
@@ -31,7 +128,7 @@ namespace Xamarin.Forms.Controls
 			switchCell.SetBinding(SwitchCell.OnProperty, ".");
 			switchCell.SetValue(SwitchCell.TextProperty, "Switch Cell!");
 
-			var vc= new ViewCell
+			var vc = new ViewCell
 			{
 				View = new StackLayout
 				{
@@ -53,10 +150,34 @@ namespace Xamarin.Forms.Controls
 
 			flipButton.Clicked += (s, e) =>
 			{
-				if (Content.FlowDirection == FlowDirection.LeftToRight || Content.FlowDirection == FlowDirection.MatchParent)
-					SetContent(FlowDirection.RightToLeft);
+				FlowDirection newDirection;
+				if (direction == FlowDirection.LeftToRight || direction == FlowDirection.MatchParent)
+					newDirection = FlowDirection.RightToLeft;
 				else
-					SetContent(FlowDirection.LeftToRight);
+					newDirection = FlowDirection.LeftToRight;
+
+				var parentPage = Parent as Page;
+				if (parentPage == null)
+				{
+					FlowDirectionGalleryLandingPage.PushContentPage(newDirection);
+					return;
+				}
+				string parentType = parentPage.GetType().ToString();
+				switch (parentType)
+				{
+					case "Xamarin.Forms.Controls.FlowDirectionGalleryMDP":
+						FlowDirectionGalleryLandingPage.PushMasterDetailPage(newDirection);
+						break;
+					case "Xamarin.Forms.Controls.FlowDirectionGalleryCarP":
+						FlowDirectionGalleryLandingPage.PushCarouselPage(newDirection);
+						break;
+					case "Xamarin.Forms.Controls.FlowDirectionGalleryNP":
+						FlowDirectionGalleryLandingPage.PushNavigationPage(newDirection);
+						break;
+					case "Xamarin.Forms.Controls.FlowDirectionGalleryTP":
+						FlowDirectionGalleryLandingPage.PushTabbedPage(newDirection);
+						break;
+				}
 			};
 
 			var grid = new Grid
@@ -192,7 +313,8 @@ namespace Xamarin.Forms.Controls
 
 			var stack = new StackLayout
 			{
-				Children = {        new Label { Text = $"Device Direction: {DeviceDirection}" },
+				Children = {        new Button { Text = "Go back to Gallery home", Command = new Command(()=> { ((App)Application.Current).SetMainPage(((App)Application.Current).CreateDefaultMainPage()); }) },
+									new Label { Text = $"Device Direction: {DeviceDirection}" },
 									flipButton,
 									grid,
 									new Label { Text = "TableView", FontSize = 10, TextColor = Color.DarkGray },
@@ -214,8 +336,7 @@ namespace Xamarin.Forms.Controls
 
 			Content = new ScrollView
 			{
-				Content = stack,
-				FlowDirection = direction
+				Content = stack
 			};
 		}
 
