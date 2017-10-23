@@ -65,6 +65,7 @@ namespace Xamarin.Forms.Controls
 		{
 			FlowDirection = direction;
 			Navigation.PushAsync(new FlowDirectionGalleryCP(direction));
+			Navigation.PushAsync(new FlowDirectionGalleryCP(direction));
 		}
 	}
 
@@ -73,8 +74,9 @@ namespace Xamarin.Forms.Controls
 		public FlowDirectionGalleryMDP(FlowDirection direction)
 		{
 			FlowDirection = direction;
-			Master = new FlowDirectionGalleryCP(direction) { Title = "Master" };
+			Master = new FlowDirectionGalleryCP(direction) { Title = "Master", BackgroundColor = Color.Red };
 			Detail = new FlowDirectionGalleryCP(direction);
+			IsPresented = true;
 		}
 	}
 
@@ -94,9 +96,9 @@ namespace Xamarin.Forms.Controls
 		public FlowDirectionGalleryTP(FlowDirection direction)
 		{
 			FlowDirection = direction;
-			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "1" });
-			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "2" });
-			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "3" });
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "1", BackgroundColor = Color.Red });
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "2", BackgroundColor = Color.Orange });
+			Children.Add(new FlowDirectionGalleryCP(direction) { Title = "3", BackgroundColor = Color.Yellow });
 		}
 	}
 
@@ -106,6 +108,8 @@ namespace Xamarin.Forms.Controls
 
 		public FlowDirectionGalleryCP(FlowDirection direction)
 		{
+			NavigationPage.SetHasBackButton(this, true);
+			NavigationPage.SetBackButtonTitle(this, "Back");
 			SetContent(direction);
 		}
 
