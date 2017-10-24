@@ -106,6 +106,8 @@ namespace Xamarin.Forms.Controls
 	{
 		FlowDirection DeviceDirection => Device.Info.CurrentFlowDirection;
 
+		Page ParentPage => (Parent as Page) ?? this;
+
 		public FlowDirectionGalleryCP(FlowDirection direction)
 		{
 			var item = new ToolbarItem
@@ -162,9 +164,18 @@ namespace Xamarin.Forms.Controls
 
 			var viewCell = new DataTemplate(() => vc);
 
+			var relayout = new Switch
+			{
+				IsToggled = true,
+				HorizontalOptions = LayoutOptions.End,
+				VerticalOptions = LayoutOptions.Center
+			};
+
 			var flipButton = new Button
 			{
-				Text = direction == FlowDirection.RightToLeft ? "Switch to Left To Right" : "Switch to Right To Left"
+				Text = direction == FlowDirection.RightToLeft ? "Switch to Left To Right" : "Switch to Right To Left",
+				HorizontalOptions = LayoutOptions.StartAndExpand,
+				VerticalOptions = LayoutOptions.Center
 			};
 
 			flipButton.Clicked += (s, e) =>
@@ -175,13 +186,23 @@ namespace Xamarin.Forms.Controls
 				else
 					newDirection = FlowDirection.LeftToRight;
 
-				var parentPage = Parent as Page;
-				if (parentPage == null)
+				if (relayout.IsToggled)
+				{
+					ParentPage.FlowDirection = newDirection;
+
+					direction = newDirection;
+
+					flipButton.Text = direction == FlowDirection.RightToLeft ? "Switch to Left To Right" : "Switch to Right To Left";
+
+					return;
+				}
+
+				if (ParentPage == this)
 				{
 					FlowDirectionGalleryLandingPage.PushContentPage(newDirection);
 					return;
 				}
-				string parentType = parentPage.GetType().ToString();
+				string parentType = ParentPage.GetType().ToString();
 				switch (parentType)
 				{
 					case "Xamarin.Forms.Controls.FlowDirectionGalleryMDP":
@@ -197,6 +218,12 @@ namespace Xamarin.Forms.Controls
 						FlowDirectionGalleryLandingPage.PushTabbedPage(newDirection);
 						break;
 				}
+			};
+
+			var horStack = new StackLayout
+			{
+				Orientation = StackOrientation.Horizontal,
+				Children = { flipButton, new Label { Text = "Relayout", HorizontalOptions = LayoutOptions.End, VerticalOptions = LayoutOptions.Center }, relayout }
 			};
 
 			var grid = new Grid
@@ -334,7 +361,7 @@ namespace Xamarin.Forms.Controls
 			{
 				Children = {        new Button { Text = "Go back to Gallery home", Command = new Command(()=> { ((App)Application.Current).SetMainPage(((App)Application.Current).CreateDefaultMainPage()); }) },
 									new Label { Text = $"Device Direction: {DeviceDirection}" },
-									flipButton,
+									horStack,
 									grid,
 									new Label { Text = "TableView", FontSize = 10, TextColor = Color.DarkGray },
 									tbl,
