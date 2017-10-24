@@ -136,7 +136,7 @@ namespace Xamarin.Forms.Core.UnitTests
 		}
 
 		[Test]
-		public void NotifyFlowDirectionChangedDoesNotTriggerFlowDirectionPropertyChanged()
+		public void NotifyFlowDirectionChangedDoesNotTriggerFlowDirectionPropertyChangedUnnecessarily()
 		{
 			var layout = ExplicitRightToLeftLayout();
 			var layout2 = ImplicitLeftToRightLayout();
@@ -156,7 +156,7 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = ((PropertyWatchingView)view).FlowDirectionPropertyChangedCount;
 
-			Assert.AreEqual(0, target);
+			Assert.AreEqual(1, target);
 		}
 
 		[Test]
