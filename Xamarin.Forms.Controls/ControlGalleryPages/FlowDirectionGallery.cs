@@ -108,6 +108,21 @@ namespace Xamarin.Forms.Controls
 
 		public FlowDirectionGalleryCP(FlowDirection direction)
 		{
+			var item = new ToolbarItem
+			{
+				Icon = "coffee.png",
+				Text = "Item 1",
+			};
+
+			var item2 = new ToolbarItem
+			{
+				Icon = "bank.png",
+				Text = "Item 2",
+			};
+
+			ToolbarItems.Add(item);
+			ToolbarItems.Add(item2);
+
 			Title = "Flow Direction Gallery";
 			NavigationPage.SetHasBackButton(this, true);
 			NavigationPage.SetBackButtonTitle(this, "Back");
