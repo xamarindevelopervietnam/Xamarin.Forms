@@ -315,6 +315,8 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 				UpdateBackgroundImage(Element);
 			else if (e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
 				UpdateBackgroundColor(Element);
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		void MasterDetailPageAppearing(object sender, EventArgs e)
