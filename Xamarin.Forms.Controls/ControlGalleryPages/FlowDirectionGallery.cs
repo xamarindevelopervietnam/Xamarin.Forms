@@ -75,7 +75,7 @@ namespace Xamarin.Forms.Controls
 		{
 			FlowDirection = direction;
 			Master = new FlowDirectionGalleryCP(direction) { Title = "Master", BackgroundColor = Color.Red };
-			Detail = new FlowDirectionGalleryCP(direction);
+			Detail = new FlowDirectionGalleryCP(direction) { Title = "Detail" };
 			IsPresented = true;
 		}
 	}
@@ -108,6 +108,7 @@ namespace Xamarin.Forms.Controls
 
 		public FlowDirectionGalleryCP(FlowDirection direction)
 		{
+			Title = "Flow Direction Gallery";
 			NavigationPage.SetHasBackButton(this, true);
 			NavigationPage.SetBackButtonTitle(this, "Back");
 			SetContent(direction);
@@ -126,7 +127,6 @@ namespace Xamarin.Forms.Controls
 
 			var entryCell = new DataTemplate(typeof(EntryCell));
 			entryCell.SetBinding(EntryCell.TextProperty, ".");
-			//entryCell.SetValue(EntryCell.HorizontalTextAlignmentProperty, TextAlignment.Center);
 
 			var switchCell = new DataTemplate(typeof(SwitchCell));
 			switchCell.SetBinding(SwitchCell.OnProperty, ".");
