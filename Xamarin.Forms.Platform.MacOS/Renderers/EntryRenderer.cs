@@ -38,7 +38,7 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		IElementController ElementController => Element;
 
-		IViewController ElementViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		IEntryController EntryController => Element;
 
@@ -154,7 +154,7 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		void UpdateAlignment()
 		{
-			Control.Alignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ElementViewController.EffectiveFlowDirection);
+			Control.Alignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(VisualElementController.EffectiveFlowDirection);
 		}
 
 		void UpdateColor()

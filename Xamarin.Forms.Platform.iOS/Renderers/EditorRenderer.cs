@@ -9,7 +9,7 @@ namespace Xamarin.Forms.Platform.iOS
 	{
 		bool _disposed;
 		IEditorController ElementController => Element;
-		IViewController ElementViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		protected override void Dispose(bool disposing)
 		{
@@ -139,12 +139,12 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void UpdateTextAlignment()
 		{
-			if (ElementViewController == null || Control == null)
+			if (VisualElementController == null || Control == null)
 				return;
 
-			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				Control.TextAlignment = UITextAlignment.Right;
-			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				Control.TextAlignment = UITextAlignment.Left;
 		}
 

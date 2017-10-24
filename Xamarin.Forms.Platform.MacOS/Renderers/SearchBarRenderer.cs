@@ -11,7 +11,7 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		IElementController ElementController => Element;
 
-		IViewController ElementViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		protected override void Dispose(bool disposing)
 		{
@@ -127,7 +127,7 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		void UpdateAlignment()
 		{
-			Control.Alignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ElementViewController.EffectiveFlowDirection);
+			Control.Alignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(VisualElementController.EffectiveFlowDirection);
 		}
 
 		void UpdateCancelButton()

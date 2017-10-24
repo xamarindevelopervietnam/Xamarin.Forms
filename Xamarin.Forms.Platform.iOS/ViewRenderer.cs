@@ -32,7 +32,7 @@ namespace Xamarin.Forms.Platform.MacOS
 #endif
 		NativeColor _defaultColor;
 
-		IViewController ElementViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		public TNativeView Control { get; private set; }
 #if __MOBILE__
@@ -237,19 +237,19 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		void UpdateFlowDirection()
 		{
-			if (ElementViewController == null || Control == null)
+			if (VisualElementController == null || Control == null)
 				return;
 
 #if __MOBILE__
 
-			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				Control.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
-			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				Control.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
 #else
-			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				Control.UserInterfaceLayoutDirection = AppKit.NSUserInterfaceLayoutDirection.RightToLeft;
-			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				Control.UserInterfaceLayoutDirection = AppKit.NSUserInterfaceLayoutDirection.LeftToRight;
 #endif
 		}

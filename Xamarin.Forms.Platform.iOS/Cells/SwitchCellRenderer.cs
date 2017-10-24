@@ -79,23 +79,23 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void UpdateFlowDirection(CellTableViewCell cell, SwitchCell switchCell)
 		{
-			IViewController ElementViewController = switchCell.Parent as View;
+			IViewController VisualElementController = switchCell.Parent as View;
 
 			var uiSwitch = cell.AccessoryView as UISwitch;
 
-			if (ElementViewController == null || uiSwitch == null)
+			if (VisualElementController == null || uiSwitch == null)
 				return;
 
 #if __MOBILE__
 
-			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				uiSwitch.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
-			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				uiSwitch.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
 #else
-			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				uiSwitch.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.RightToLeft;
-			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				uiSwitch.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.LeftToRight;
 #endif
 		}

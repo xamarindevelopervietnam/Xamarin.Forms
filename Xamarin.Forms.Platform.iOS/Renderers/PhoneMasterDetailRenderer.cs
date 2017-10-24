@@ -25,7 +25,7 @@ namespace Xamarin.Forms.Platform.iOS
 		VisualElementTracker _tracker;
 
 		Page Page => Element as Page;
-		IViewController ElementViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		public PhoneMasterDetailRenderer()
 		{
@@ -242,7 +242,7 @@ namespace Xamarin.Forms.Platform.iOS
 			var masterFrame = frame;
 			masterFrame.Width = (int)(Math.Min(masterFrame.Width, masterFrame.Height) * 0.8);
 
-			var isRTL = ElementViewController?.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft) == true;
+			var isRTL = VisualElementController?.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft) == true;
 			if (isRTL)
 			{
 				masterFrame.X = (int)(masterFrame.Width * .25);
@@ -374,7 +374,7 @@ namespace Xamarin.Forms.Platform.iOS
 			var center = new PointF();
 			_panGesture = new UIPanGestureRecognizer(g =>
 			{
-				var isRTL = ElementViewController?.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft) == true;
+				var isRTL = VisualElementController?.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft) == true;
 
 				int directionModifier = isRTL ? -1 : 1;
 

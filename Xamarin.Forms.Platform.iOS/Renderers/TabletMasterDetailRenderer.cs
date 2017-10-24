@@ -57,7 +57,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 		Page PageController => Element as Page;
 		Element ElementController => Element as Element;
-		IViewController ElementViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		protected MasterDetailPage MasterDetailPage => _masterDetailPage ?? (_masterDetailPage = (MasterDetailPage)Element);
 
@@ -354,12 +354,12 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void UpdateFlowDirection()
 		{
-			if (ElementViewController == null || NativeView == null)
+			if (VisualElementController == null || NativeView == null)
 				return;
 
-			if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				NativeView.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
-			else if (ElementViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				NativeView.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
 		}
 

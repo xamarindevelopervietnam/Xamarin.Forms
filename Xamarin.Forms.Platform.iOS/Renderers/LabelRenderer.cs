@@ -23,7 +23,7 @@ namespace Xamarin.Forms.Platform.MacOS
 
 		bool _perfectSizeValid;
 
-		IViewController ElementViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
 		{
@@ -192,9 +192,9 @@ namespace Xamarin.Forms.Platform.MacOS
 		void UpdateAlignment()
 		{
 #if __MOBILE__
-			Control.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ElementViewController.EffectiveFlowDirection);
+			Control.TextAlignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(VisualElementController.EffectiveFlowDirection);
 #else
-			Control.Alignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(ElementViewController.EffectiveFlowDirection);
+			Control.Alignment = Element.HorizontalTextAlignment.ToNativeTextAlignment(VisualElementController.EffectiveFlowDirection);
 #endif
 		}
 

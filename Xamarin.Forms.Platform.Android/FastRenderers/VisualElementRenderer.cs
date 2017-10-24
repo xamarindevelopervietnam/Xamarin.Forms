@@ -15,7 +15,7 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 		
 		IVisualElementRenderer _renderer;
 		readonly GestureManager _gestureManager;
-		readonly AutomationPropertiesProvider _automatiomPropertiesProvider;
+		readonly AutomationPropertiesProvider _automationPropertiesProvider;
 		readonly EffectControlProvider _effectControlProvider;
 
 		public VisualElementRenderer(IVisualElementRenderer renderer)
@@ -24,14 +24,14 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 			_renderer.ElementPropertyChanged += OnElementPropertyChanged;
 			_renderer.ElementChanged += OnElementChanged;
 			_gestureManager = new GestureManager(_renderer);
-			_automatiomPropertiesProvider = new AutomationPropertiesProvider(_renderer);
+			_automationPropertiesProvider = new AutomationPropertiesProvider(_renderer);
 
 			_effectControlProvider = new EffectControlProvider(_renderer?.View);
 		}
 
 		VisualElement Element => _renderer?.Element;
 
-		IViewController ViewController => Element as View;
+		IVisualElementController VisualElementController => Element as VisualElement;
 		
 		AView Control => _renderer?.View;
 
@@ -50,12 +50,12 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 
 		public void UpdateFlowDirection()
 		{
-			if (_disposed || ViewController == null || Control == null || (int)Build.VERSION.SdkInt < 17)
+			if (_disposed || VisualElementController == null || Control == null || (int)Build.VERSION.SdkInt < 17)
 				return;
 
-			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				Control.LayoutDirection = LayoutDirection.Rtl;
-			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				Control.LayoutDirection = LayoutDirection.Ltr;
 		}
 
@@ -80,7 +80,7 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 			if (disposing)
 			{
 				_gestureManager?.Dispose();
-				_automatiomPropertiesProvider?.Dispose();
+				_automationPropertiesProvider?.Dispose();
 
 				if (_renderer != null)
 				{

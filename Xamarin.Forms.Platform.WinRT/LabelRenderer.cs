@@ -38,7 +38,7 @@ namespace Xamarin.Forms.Platform.WinRT
 		bool _isInitiallyDefault;
 		SizeRequest _perfectSize;
 		bool _perfectSizeValid;
-		IViewController ViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
@@ -163,7 +163,7 @@ namespace Xamarin.Forms.Platform.WinRT
 			if (label == null)
 				return;
 
-			textBlock.TextAlignment = label.HorizontalTextAlignment.ToNativeTextAlignment(ViewController.EffectiveFlowDirection);
+			textBlock.TextAlignment = label.HorizontalTextAlignment.ToNativeTextAlignment(VisualElementController.EffectiveFlowDirection);
 			textBlock.VerticalAlignment = label.VerticalTextAlignment.ToNativeVerticalAlignment();
 		}
 

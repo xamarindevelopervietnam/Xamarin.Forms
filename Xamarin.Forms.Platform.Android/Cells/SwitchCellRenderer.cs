@@ -62,12 +62,12 @@ namespace Xamarin.Forms.Platform.Android
 
 		void UpdateFlowDirection()
 		{
-			if (ViewController == null || (int)Build.VERSION.SdkInt < 17)
+			if (VisualElementController == null || (int)Build.VERSION.SdkInt < 17)
 				return;
 
-			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				_view.LayoutDirection = LayoutDirection.Rtl;
-			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				_view.LayoutDirection = LayoutDirection.Ltr;
 		}
 

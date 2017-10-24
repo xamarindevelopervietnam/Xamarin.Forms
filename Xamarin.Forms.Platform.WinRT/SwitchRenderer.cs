@@ -13,7 +13,7 @@ namespace Xamarin.Forms.Platform.WinRT
 {
 	public class SwitchRenderer : ViewRenderer<Switch, ToggleSwitch>
 	{
-		IViewController ViewController => Element;
+		IVisualElementController VisualElementController => Element;
 
 		protected override void OnElementChanged(ElementChangedEventArgs<Switch> e)
 		{
@@ -56,12 +56,12 @@ namespace Xamarin.Forms.Platform.WinRT
 
 		void UpdateFlowDirection()
 		{
-			if (ViewController == null || Control == null)
+			if (VisualElementController == null || Control == null)
 				return;
 
-			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
 				Control.FlowDirection = WFlowDirection.RightToLeft;
-			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 	}

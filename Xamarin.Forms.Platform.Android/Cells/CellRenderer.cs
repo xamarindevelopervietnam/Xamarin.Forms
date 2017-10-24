@@ -21,7 +21,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		protected Cell Cell { get; set; }
 
-		protected IViewController ViewController => ParentView;
+		protected IVisualElementController VisualElementController => ParentView;
 
 		public AView GetCell(Cell item, AView convertView, ViewGroup parent, Context context)
 		{
