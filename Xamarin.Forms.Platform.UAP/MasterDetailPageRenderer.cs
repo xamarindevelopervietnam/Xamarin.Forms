@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms.PlatformConfiguration.WindowsSpecific;
 using Specifics = Xamarin.Forms.PlatformConfiguration.WindowsSpecific.MasterDetailPage;
+using WFlowDirection = Windows.UI.Xaml.FlowDirection;
 
 namespace Xamarin.Forms.Platform.UWP
 {
@@ -18,6 +19,7 @@ namespace Xamarin.Forms.Platform.UWP
 		bool _showTitle;
 
 		VisualElementTracker<Page, FrameworkElement> _tracker;
+		IViewController ViewController => Element;
 
 		public MasterDetailControl Control { get; private set; }
 
@@ -208,6 +210,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			Element.SendAppearing();
 			UpdateBounds();
+			UpdateFlowDirection();
 		}
 
 		void OnControlUnloaded(object sender, RoutedEventArgs routedEventArgs)
@@ -275,6 +278,17 @@ namespace Xamarin.Forms.Platform.UWP
 
 			Control.DetailTitle = (_detail as NavigationPage)?.CurrentPage?.Title ?? _detail.Title ?? Element?.Title;
 			(this as ITitleProvider).ShowTitle = !string.IsNullOrEmpty(Control.DetailTitle);
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (ViewController == null || Control == null)
+				return;
+
+			if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				Control.FlowDirection = WFlowDirection.RightToLeft;
+			else if (ViewController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 
 		void UpdateIsPresented()
