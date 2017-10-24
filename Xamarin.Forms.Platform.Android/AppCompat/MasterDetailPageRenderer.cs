@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Android.Content;
 using Android.Support.V4.Widget;
 using Android.Views;
+using Android.OS;
 using Android.Support.V4.App;
 using AView = Android.Views.View;
 
@@ -39,6 +40,8 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 		MasterDetailPage Element { get; set; }
 
 		IMasterDetailPageController MasterDetailPageController => Element as IMasterDetailPageController;
+
+		IVisualElementController VisualElementController => Element;
 
 		bool Presented
 		{
@@ -152,6 +155,8 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 				UpdateMaster();
 				UpdateDetail();
+
+				UpdateFlowDirection();
 
 				((IMasterDetailPageController)newElement).BackButtonPressed += OnBackButtonPressed;
 				newElement.PropertyChanged += HandlePropertyChanged;
@@ -365,6 +370,17 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 		{
 			Context.HideKeyboard(this);
 			_detailLayout.ChildView = Element.Detail;
+		}
+
+		void UpdateFlowDirection()
+		{
+			if (VisualElementController == null || (int)Build.VERSION.SdkInt < 17)
+				return;
+
+			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+				LayoutDirection = LayoutDirection.Rtl;
+			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+				LayoutDirection = LayoutDirection.Ltr;
 		}
 
 		void UpdateIsPresented()
