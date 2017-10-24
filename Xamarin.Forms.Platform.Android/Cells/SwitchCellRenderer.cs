@@ -40,6 +40,8 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateHeight();
 			else if (args.PropertyName == Cell.IsEnabledProperty.PropertyName)
 				UpdateIsEnabled(_view, (SwitchCell)sender);
+			else if (args.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		void UpdateChecked()

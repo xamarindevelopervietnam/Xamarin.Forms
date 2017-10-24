@@ -73,6 +73,8 @@ namespace Xamarin.Forms.Platform.WinRT
 				if (Control.Value != Element.Value)
 					Control.Value = Element.Value;
 			}
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		protected override void UpdateBackgroundColor()

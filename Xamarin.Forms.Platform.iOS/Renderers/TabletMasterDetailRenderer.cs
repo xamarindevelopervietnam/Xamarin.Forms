@@ -289,6 +289,8 @@ namespace Xamarin.Forms.Platform.iOS
 				ToggleMaster();
 			else if (e.PropertyName == Xamarin.Forms.MasterDetailPage.IsGestureEnabledProperty.PropertyName)
 				base.PresentsWithGesture = this.MasterDetailPage.IsGestureEnabled;
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 			MessagingCenter.Send<IVisualElementRenderer>(this, NavigationRenderer.UpdateToolbarButtons);
 		}
 

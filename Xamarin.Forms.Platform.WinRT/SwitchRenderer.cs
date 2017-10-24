@@ -45,6 +45,10 @@ namespace Xamarin.Forms.Platform.WinRT
 			{
 				Control.IsOn = Element.IsToggled;
 			}
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+			{
+				UpdateFlowDirection();
+			}
 		}
 
 		protected override bool PreventGestureBubbling { get; set; } = true;

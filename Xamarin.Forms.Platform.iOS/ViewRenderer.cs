@@ -109,6 +109,8 @@ namespace Xamarin.Forms.Platform.MacOS
 					UpdateIsEnabled();
 				else if (e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
 					SetBackgroundColor(Element.BackgroundColor);
+				else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+					UpdateFlowDirection();
 			}
 
 			base.OnElementPropertyChanged(sender, e);

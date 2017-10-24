@@ -37,6 +37,8 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateIsEnabled();
 			else if (args.PropertyName == "RenderHeight")
 				UpdateHeight();
+			else if (args.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		void UpdateDetailText()

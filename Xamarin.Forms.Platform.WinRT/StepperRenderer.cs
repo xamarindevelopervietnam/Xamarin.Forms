@@ -48,6 +48,8 @@ namespace Xamarin.Forms.Platform.WinRT
 				UpdateIncrement();
 			else if (e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
 				UpdateBackgroundColor();
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		protected override void UpdateBackgroundColor()

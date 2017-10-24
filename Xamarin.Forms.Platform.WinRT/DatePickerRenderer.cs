@@ -72,6 +72,8 @@ namespace Xamarin.Forms.Platform.WinRT
 				UpdateMinimumDate();
 			else if (e.PropertyName == DatePicker.TextColorProperty.PropertyName)
 				UpdateTextColor();
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		protected override bool PreventGestureBubbling { get; set; } = true;

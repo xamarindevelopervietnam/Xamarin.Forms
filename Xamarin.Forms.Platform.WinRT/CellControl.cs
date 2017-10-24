@@ -143,6 +143,8 @@ namespace Xamarin.Forms.Platform.WinRT
 			{
 				SetupContextMenu();
 			}
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection(Cell);
 		}
 
 		void OnClick(object sender, PointerRoutedEventArgs e)

@@ -59,6 +59,8 @@ namespace Xamarin.Forms.Platform.iOS
 				realCell.TextLabel.Text = boolCell.Text;
 			else if (e.PropertyName == Cell.IsEnabledProperty.PropertyName)
 				UpdateIsEnabled(realCell, boolCell);
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		void OnSwitchValueChanged(object sender, EventArgs eventArgs)

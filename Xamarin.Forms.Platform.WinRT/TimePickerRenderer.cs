@@ -67,6 +67,9 @@ namespace Xamarin.Forms.Platform.WinRT
 
 			if (e.PropertyName == TimePicker.TextColorProperty.PropertyName)
 				UpdateTextColor();
+
+			if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		protected override bool PreventGestureBubbling { get; set; } = true;

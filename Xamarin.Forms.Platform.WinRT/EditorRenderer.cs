@@ -89,6 +89,10 @@ namespace Xamarin.Forms.Platform.WinRT
 			{
 				UpdateText();
 			}
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+			{
+				UpdateFlowDirection();
+			}
 		}
 
 		void OnLostFocus(object sender, RoutedEventArgs e)

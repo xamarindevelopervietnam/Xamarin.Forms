@@ -112,6 +112,8 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 		{
 			if (e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
 				UpdateBackgroundColor();
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 	}
 }

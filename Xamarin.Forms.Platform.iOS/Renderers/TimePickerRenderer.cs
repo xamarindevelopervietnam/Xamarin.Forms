@@ -91,6 +91,9 @@ namespace Xamarin.Forms.Platform.iOS
 
 			if (e.PropertyName == TimePicker.TextColorProperty.PropertyName || e.PropertyName == VisualElement.IsEnabledProperty.PropertyName)
 				UpdateTextColor();
+
+			if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		void OnEnded(object sender, EventArgs eventArgs)
