@@ -9,21 +9,22 @@ namespace Xamarin.Forms.Platform.Android
 
 		public bool HandleMotionEvent(IViewParent parent, MotionEvent motionEvent)
 		{
-			if (_isInViewCell || _element.InputTransparent || motionEvent.Action == MotionEventActions.Cancel)
-			{
-				return false;
-			}
+			//if (_isInViewCell || _element.InputTransparent || motionEvent.Action == MotionEventActions.Cancel)
+			//{
+			//	return false;
+			//}
 
-			var renderer = parent as Platform.DefaultRenderer;
-			if (renderer == null)
-			{
-				return false;
-			}
+			//var renderer = parent as Platform.DefaultRenderer;
+			//if (renderer == null)
+			//{
+			//	return false;
+			//}
 
-			// Let the container know that we're "fake" handling this event
-			renderer.NotifyFakeHandling();
+			//// Let the container know that we're "fake" handling this event
+			//renderer.NotifyFakeHandling();
 
-			return true;
+			//return true;
+			return false;
 		}
 
 		public void UpdateElement(VisualElement element)

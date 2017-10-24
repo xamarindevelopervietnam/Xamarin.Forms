@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Android.Support.V4.View;
 using Android.Views;
@@ -54,6 +55,8 @@ namespace Xamarin.Forms.Platform.Android
 				eventConsumed = _scaleDetector.Value.OnTouchEvent(e);
 			}
 
+			Debug.WriteLine($">>>>> GestureManager OnTouchEvent {Element}: {e.Action}");
+
 			eventConsumed = _tapAndPanDetector.Value.OnTouchEvent(e) || eventConsumed;
 
 			return eventConsumed;
@@ -86,7 +89,7 @@ namespace Xamarin.Forms.Platform.Android
 		GestureDetector InitializeTapAndPanDetector()
 		{
 			var listener = new InnerGestureListener(new TapGestureHandler(() => View),
-				new PanGestureHandler(() => View, Control.Context.FromPixels));
+				new PanGestureHandler(() => View, Control.Context.FromPixels), Control.Context);
 
 			return new GestureDetector(listener);
 		}

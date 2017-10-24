@@ -34,34 +34,34 @@ namespace Xamarin.Forms.Platform.Android
 
 		public override bool OnTouchEvent(MotionEvent e)
 		{
-			return _gestureManager.OnTouchEvent(e) || base.OnTouchEvent(e);
+			return _gestureManager.OnTouchEvent(e) ;//|| base.OnTouchEvent(e);
 		}
 
-		public override bool OnInterceptTouchEvent(MotionEvent ev)
-		{
-			if (!Enabled)
-			{
-				// If Enabled is false, prevent all the events from being dispatched to child Views
-				// and prevent them from being processed by this View as well
-				return true; // IOW, intercepted
-			}
+		//public override bool OnInterceptTouchEvent(MotionEvent ev)
+		//{
+		//	if (!Enabled)
+		//	{
+		//		// If Enabled is false, prevent all the events from being dispatched to child Views
+		//		// and prevent them from being processed by this View as well
+		//		return true; // IOW, intercepted
+		//	}
 
-			return base.OnInterceptTouchEvent(ev);
-		}
+		//	return base.OnInterceptTouchEvent(ev);
+		//}
 
-		public override bool DispatchTouchEvent(MotionEvent e)
-		{
-			if (InputTransparent)
-			{
-				// If the Element is InputTransparent, this ViewGroup will be marked InputTransparent
-				// If we're InputTransparent we should return false on all touch events without
-				// even bothering to send them to the child Views
+		//public override bool DispatchTouchEvent(MotionEvent e)
+		//{
+		//	if (InputTransparent)
+		//	{
+		//		// If the Element is InputTransparent, this ViewGroup will be marked InputTransparent
+		//		// If we're InputTransparent we should return false on all touch events without
+		//		// even bothering to send them to the child Views
 
-				return false; // IOW, not handled
-			}
+		//		return false; // IOW, not handled
+		//	}
 
-			return base.DispatchTouchEvent(e);
-		}		  		
+		//	return base.DispatchTouchEvent(e);
+		//}		  		
 
 		[Obsolete("This constructor is obsolete as of version 3.0. Please use VisualElementRenderer(Context) instead.")]
 		protected VisualElementRenderer() : this(Forms.Context)
