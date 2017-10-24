@@ -103,7 +103,20 @@ namespace Xamarin.Forms
 			set { SetValue(FlowDirectionProperty, value); }
 		}
 
-		EffectiveFlowDirection IFlowDirectionController.EffectiveFlowDirection { get; set; } = EffectiveFlowDirection.LeftToRight | EffectiveFlowDirection.Implicit;
+		EffectiveFlowDirection _effectiveFlowDirection = EffectiveFlowDirection.LeftToRight | EffectiveFlowDirection.Implicit;
+		EffectiveFlowDirection IFlowDirectionController.EffectiveFlowDirection
+		{
+			get { return _effectiveFlowDirection; }
+			set
+			{
+				if (value == _effectiveFlowDirection)
+					return;
+
+				_effectiveFlowDirection = value;
+				InvalidateMeasureInternal(InvalidationTrigger.Undefined);
+				OnPropertyChanged(FlowDirectionProperty.PropertyName);
+			}
+		}
 
 		EffectiveFlowDirection IVisualElementController.EffectiveFlowDirection => FlowController.EffectiveFlowDirection;
 

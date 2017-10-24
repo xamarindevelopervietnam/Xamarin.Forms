@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
@@ -18,7 +19,22 @@ namespace Xamarin.Forms
 
 		bool _nextCallToForceUpdateSizeQueued;
 
-		EffectiveFlowDirection IFlowDirectionController.EffectiveFlowDirection { get; set; } = EffectiveFlowDirection.LeftToRight | EffectiveFlowDirection.Implicit;
+		EffectiveFlowDirection _effectiveFlowDirection = EffectiveFlowDirection.LeftToRight | EffectiveFlowDirection.Implicit;
+		EffectiveFlowDirection IFlowDirectionController.EffectiveFlowDirection
+		{
+			get { return _effectiveFlowDirection; }
+			set
+			{
+				if (value == _effectiveFlowDirection)
+					return;
+
+				_effectiveFlowDirection = value;
+
+				var ve = (Parent as VisualElement);
+				ve?.InvalidateMeasureInternal(InvalidationTrigger.Undefined);
+				OnPropertyChanged(VisualElement.FlowDirectionProperty.PropertyName);
+			}
+		}
 		IFlowDirectionController FlowController => this;
 
 		public IList<MenuItem> ContextActions
@@ -154,6 +170,8 @@ namespace Xamarin.Forms
 					RealParent.PropertyChanged -= OnParentPropertyChanged;
 					RealParent.PropertyChanging -= OnParentPropertyChanging;
 				}
+
+				FlowController.NotifyFlowDirectionChanged();
 			}
 
 			base.OnPropertyChanging(propertyName);
@@ -222,6 +240,8 @@ namespace Xamarin.Forms
 			// its uncommon enough that we don't want to take the penalty of N GetValue calls to verify.
 			if (e.PropertyName == "RowHeight")
 				OnPropertyChanged("RenderHeight");
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				FlowController.NotifyFlowDirectionChanged();
 		}
 
 		void OnParentPropertyChanging(object sender, PropertyChangingEventArgs e)
