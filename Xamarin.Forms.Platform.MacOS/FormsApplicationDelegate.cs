@@ -42,10 +42,7 @@ namespace Xamarin.Forms.Platform.MacOS
 				throw new InvalidOperationException("You MUST invoke LoadApplication () before calling base.FinishedLaunching ()");
 
 			SetMainPage();
-
-			var mainMenu = Element.GetMenu(_application);
-			if(mainMenu != null)
-				SetMainMenu(mainMenu);
+			UpdateMainMenu();
 			_application.SendStart();
 		}
 
@@ -71,7 +68,7 @@ namespace Xamarin.Forms.Platform.MacOS
 			if (e.PropertyName == nameof(Application.MainPage))
 				UpdateMainPage();
 			if (e.PropertyName == nameof(Menu))
-				UpdateMainPage();
+				UpdateMainMenu();
 		}
 
 		void SetMainPage()
@@ -89,8 +86,16 @@ namespace Xamarin.Forms.Platform.MacOS
 			(platformRenderer?.Platform as IDisposable)?.Dispose();
 		}
 
+		void UpdateMainMenu()
+		{
+			var mainMenu = Element.GetMenu(_application);
+			if (mainMenu != null)
+				SetMainMenu(mainMenu);
+		}
+
 		void SetMainMenu(Menu mainMenu)
 		{
+			mainMenu.PropertyChanged -= MainMenuOnPropertyChanged;
 			mainMenu.PropertyChanged += MainMenuOnPropertyChanged;
 			MainMenuOnPropertyChanged(this, null);
 		}
