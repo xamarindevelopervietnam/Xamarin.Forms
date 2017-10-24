@@ -54,6 +54,8 @@ namespace Xamarin.Forms.Platform.WinRT
 
 			if (e.PropertyName == ProgressBar.ProgressProperty.PropertyName)
 				Control.Value = Element.Progress;
+			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
+				UpdateFlowDirection();
 		}
 
 		void ProgressBarOnValueChanged(object sender, RangeBaseValueChangedEventArgs rangeBaseValueChangedEventArgs)
@@ -70,8 +72,6 @@ namespace Xamarin.Forms.Platform.WinRT
 				Control.FlowDirection = WFlowDirection.RightToLeft;
 			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
 				Control.FlowDirection = WFlowDirection.LeftToRight;
-			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
-				UpdateFlowDirection();
 		}
 	}
 }
