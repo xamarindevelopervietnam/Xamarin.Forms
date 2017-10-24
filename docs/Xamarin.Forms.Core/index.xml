@@ -213,6 +213,7 @@
       <Type Name="Easing" Kind="Class" />
       <Type Name="Editor" Kind="Class" />
       <Type Name="Effect" Kind="Class" />
+      <Type Name="EffectiveFlowDirection" Kind="Enumeration" />
       <Type Name="Element" Kind="Class" />
       <Type Name="ElementEventArgs" Kind="Class" />
       <Type Name="ElementTemplate" Kind="Class" />
@@ -222,6 +223,7 @@
       <Type Name="ExportEffectAttribute" Kind="Class" />
       <Type Name="FileImageSource" Kind="Class" />
       <Type Name="FileImageSourceConverter" Kind="Class" />
+      <Type Name="FlowDirection" Kind="Enumeration" />
       <Type Name="FocusEventArgs" Kind="Class" />
       <Type Name="Font" Kind="Structure" />
       <Type Name="FontAttributes" Kind="Enumeration" />
