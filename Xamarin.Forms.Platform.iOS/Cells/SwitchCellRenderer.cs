@@ -60,7 +60,7 @@ namespace Xamarin.Forms.Platform.iOS
 			else if (e.PropertyName == Cell.IsEnabledProperty.PropertyName)
 				UpdateIsEnabled(realCell, boolCell);
 			else if (e.PropertyName == VisualElement.FlowDirectionProperty.PropertyName)
-				UpdateFlowDirection();
+				UpdateFlowDirection(realCell, boolCell);
 		}
 
 		void OnSwitchValueChanged(object sender, EventArgs eventArgs)
