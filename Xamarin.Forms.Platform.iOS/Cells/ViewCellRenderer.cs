@@ -84,6 +84,18 @@ namespace Xamarin.Forms.Platform.iOS
 				var contentFrame = ContentView.Frame;
 				var view = ViewCell.View;
 
+				if (Forms.IsiOS11OrNewer)
+				{
+					var insets = SafeAreaInsets;
+					var safeArea = SafeAreaLayoutGuide.LayoutFrame;
+					var x = insets.Left;
+					var y = insets.Top;
+					var width = safeArea.Width;
+					var height = safeArea.Height;
+					var rect = new Rectangle(x, y, width, height);
+					contentFrame = rect.ToRectangleF();
+				}
+
 				Layout.LayoutChildIntoBoundingRegion(view, contentFrame.ToRectangle());
 
 				if (_rendererRef == null)

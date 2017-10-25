@@ -69,15 +69,14 @@ namespace Xamarin.Forms.Platform.iOS
 			if (page != null && page.On<PlatformConfiguration.iOS>().UseSafeArea() && Forms.IsiOS11OrNewer)
 			{
 				var insets = NativeView.SafeAreaInsets;
-				var safeArea = NativeView.SafeAreaLayoutGuide;
+				var safeArea = NativeView.SafeAreaLayoutGuide.LayoutFrame;
 				foreach (var item in Element.LogicalChildren)
 				{
 					var x = insets.Left;
 					var y = insets.Top;
-					var width = safeArea.LayoutFrame.Width;
-					var height = safeArea.LayoutFrame.Height;
+					var width = safeArea.Width;
+					var height = safeArea.Height;
 					var rect = new Rectangle(x, y, width, height);
-					Console.WriteLine("page renderer " + rect);
 					(item as VisualElement).Layout(rect);
 				}
 			}
