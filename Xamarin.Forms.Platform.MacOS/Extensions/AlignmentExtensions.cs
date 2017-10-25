@@ -1,5 +1,6 @@
 ﻿using System;
 using AppKit;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.MacOS
 {
@@ -7,7 +8,7 @@ namespace Xamarin.Forms.Platform.MacOS
 	{
 		internal static NSTextAlignment ToNativeTextAlignment(this TextAlignment alignment, EffectiveFlowDirection flowDirection)
 		{
-			var isLtr = flowDirection.HasFlag(EffectiveFlowDirection.LeftToRight);
+			var isLtr = flowDirection.IsLeftToRight();
 			switch (alignment)
 			{
 				case TextAlignment.Center:

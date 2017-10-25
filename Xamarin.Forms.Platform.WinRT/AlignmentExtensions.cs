@@ -12,7 +12,7 @@ namespace Xamarin.Forms.Platform.WinRT
 	{
 		internal static Windows.UI.Xaml.TextAlignment ToNativeTextAlignment(this TextAlignment alignment, EffectiveFlowDirection flowDirection)
 		{
-			var isLtr = flowDirection.HasFlag(EffectiveFlowDirection.LeftToRight);
+			var isLtr = flowDirection.IsLeftToRight();
 			switch (alignment)
 			{
 				case TextAlignment.Center:

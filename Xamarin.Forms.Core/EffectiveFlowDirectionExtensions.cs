@@ -1,10 +1,13 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 
-namespace Xamarin.Forms
+namespace Xamarin.Forms.Internals
 {
-	static class EffectiveFlowDirectionExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class EffectiveFlowDirectionExtensions
 	{
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static EffectiveFlowDirection ToEffectiveFlowDirection(this FlowDirection self, EffectiveFlowDirection mode)
 		{
 			switch (self)
@@ -20,14 +23,39 @@ namespace Xamarin.Forms
 			throw new InvalidOperationException($"Cannot convert {self} to {nameof(EffectiveFlowDirection)}.");
 		}
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static FlowDirection ToFlowDirection(this EffectiveFlowDirection self)
 		{
-			if (self.HasFlag(EffectiveFlowDirection.LeftToRight) && !self.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (self.IsLeftToRight() && !self.IsRightToLeft())
 				return FlowDirection.LeftToRight;
-			else if (self.HasFlag(EffectiveFlowDirection.RightToLeft) && !self.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (self.IsRightToLeft() && !self.IsLeftToRight())
 				return FlowDirection.RightToLeft;
 
 			throw new InvalidOperationException($"Cannot convert {self} to {nameof(FlowDirection)}.");
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static bool IsRightToLeft(this EffectiveFlowDirection self)
+		{
+			return (self & EffectiveFlowDirection.RightToLeft) != 0;
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static bool IsLeftToRight(this EffectiveFlowDirection self)
+		{
+			return (self & EffectiveFlowDirection.LeftToRight) != 0;
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static bool IsImplicit(this EffectiveFlowDirection self)
+		{
+			return (self & EffectiveFlowDirection.Implicit) != 0;
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static bool IsExplicit(this EffectiveFlowDirection self)
+		{
+			return (self & EffectiveFlowDirection.Implicit) != 0;
 		}
 	}
 }

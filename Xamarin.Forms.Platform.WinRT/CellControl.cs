@@ -331,9 +331,9 @@ namespace Xamarin.Forms.Platform.WinRT
 			if (controller == null)
 				return;
 
-			if (controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (controller.EffectiveFlowDirection.IsRightToLeft())
 				FlowDirection = WFlowDirection.RightToLeft;
-			else if (controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (controller.EffectiveFlowDirection.IsLeftToRight())
 				FlowDirection = WFlowDirection.LeftToRight;
 		}
 	}

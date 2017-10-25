@@ -4,6 +4,7 @@ using Android.Text;
 using Android.Text.Method;
 using Android.Views;
 using Android.OS;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.Android
 {
@@ -130,9 +131,9 @@ namespace Xamarin.Forms.Platform.Android
 			if (VisualElementController == null || (int)Build.VERSION.SdkInt < 17)
 				return;
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				_view.LayoutDirection = LayoutDirection.Rtl;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				_view.LayoutDirection = LayoutDirection.Ltr;
 		}
 

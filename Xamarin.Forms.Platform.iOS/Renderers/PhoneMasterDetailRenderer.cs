@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using UIKit;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using PointF = CoreGraphics.CGPoint;
 
@@ -242,7 +243,7 @@ namespace Xamarin.Forms.Platform.iOS
 			var masterFrame = frame;
 			masterFrame.Width = (int)(Math.Min(masterFrame.Width, masterFrame.Height) * 0.8);
 
-			var isRTL = VisualElementController?.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft) == true;
+			var isRTL = VisualElementController?.EffectiveFlowDirection.IsRightToLeft() == true;
 			if (isRTL)
 			{
 				masterFrame.X = (int)(masterFrame.Width * .25);
@@ -374,7 +375,7 @@ namespace Xamarin.Forms.Platform.iOS
 			var center = new PointF();
 			_panGesture = new UIPanGestureRecognizer(g =>
 			{
-				var isRTL = VisualElementController?.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft) == true;
+				var isRTL = VisualElementController?.EffectiveFlowDirection.IsRightToLeft() == true;
 
 				int directionModifier = isRTL ? -1 : 1;
 

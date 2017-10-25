@@ -509,7 +509,7 @@ namespace Xamarin.Forms
 			if (controller == null)
 				return;
 
-			if (controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit))
+			if (controller.EffectiveFlowDirection.IsImplicit())
 			{
 				var parentView = child.Parent as IFlowDirectionController;
 				if (parentView == null)

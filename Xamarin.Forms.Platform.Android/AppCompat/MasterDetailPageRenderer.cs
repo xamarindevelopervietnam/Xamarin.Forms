@@ -7,6 +7,7 @@ using Android.Views;
 using Android.OS;
 using Android.Support.V4.App;
 using AView = Android.Views.View;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.Android.AppCompat
 {
@@ -379,9 +380,9 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			if (VisualElementController == null || (int)Build.VERSION.SdkInt < 17)
 				return;
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				LayoutDirection = LayoutDirection.Rtl;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				LayoutDirection = LayoutDirection.Ltr;
 		}
 

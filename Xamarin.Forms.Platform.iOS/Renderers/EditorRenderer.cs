@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using UIKit;
+using Xamarin.Forms.Internals;
 using RectangleF = CoreGraphics.CGRect;
 
 namespace Xamarin.Forms.Platform.iOS
@@ -142,9 +143,9 @@ namespace Xamarin.Forms.Platform.iOS
 			if (VisualElementController == null || Control == null)
 				return;
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				Control.TextAlignment = UITextAlignment.Right;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				Control.TextAlignment = UITextAlignment.Left;
 		}
 

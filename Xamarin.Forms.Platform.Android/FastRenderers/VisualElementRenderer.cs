@@ -53,9 +53,9 @@ namespace Xamarin.Forms.Platform.Android.FastRenderers
 			if (_disposed || VisualElementController == null || Control == null || (int)Build.VERSION.SdkInt < 17)
 				return;
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				Control.LayoutDirection = LayoutDirection.Rtl;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				Control.LayoutDirection = LayoutDirection.Ltr;
 		}
 

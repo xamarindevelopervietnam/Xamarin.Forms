@@ -768,7 +768,7 @@ namespace Xamarin.Forms
 		{
 			var self = bindable as IFlowDirectionController;
 
-			if (self.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit) && oldValue == newValue)
+			if (self.EffectiveFlowDirection.IsExplicit() && oldValue == newValue)
 				return;
 
 			var newFlowDirection = (FlowDirection)newValue;

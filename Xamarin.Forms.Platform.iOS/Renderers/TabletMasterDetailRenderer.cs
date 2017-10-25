@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using UIKit;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace Xamarin.Forms.Platform.iOS
@@ -359,9 +360,9 @@ namespace Xamarin.Forms.Platform.iOS
 			if (VisualElementController == null || NativeView == null)
 				return;
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				NativeView.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				NativeView.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
 		}
 

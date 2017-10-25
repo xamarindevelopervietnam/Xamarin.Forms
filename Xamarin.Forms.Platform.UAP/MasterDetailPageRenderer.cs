@@ -287,9 +287,9 @@ namespace Xamarin.Forms.Platform.UWP
 			if (VisualElementController == null || Control == null)
 				return;
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				Control.FlowDirection = WFlowDirection.RightToLeft;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				Control.FlowDirection = WFlowDirection.LeftToRight;
 		}
 

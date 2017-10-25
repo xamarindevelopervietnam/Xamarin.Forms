@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using RectangleF = CoreGraphics.CGRect;
 using SizeF = CoreGraphics.CGSize;
+using Xamarin.Forms.Internals;
 
 #if __MOBILE__
 using UIKit;
@@ -244,14 +245,14 @@ namespace Xamarin.Forms.Platform.MacOS
 
 #if __MOBILE__
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				Control.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				Control.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
 #else
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				Control.UserInterfaceLayoutDirection = AppKit.NSUserInterfaceLayoutDirection.RightToLeft;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				Control.UserInterfaceLayoutDirection = AppKit.NSUserInterfaceLayoutDirection.LeftToRight;
 #endif
 		}

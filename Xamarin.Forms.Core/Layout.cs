@@ -130,7 +130,7 @@ namespace Xamarin.Forms
 			bool isRightToLeft = false;
 			if (parent != null)
 			{
-				isRightToLeft = parent.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft);
+				isRightToLeft = parent.EffectiveFlowDirection.IsRightToLeft();
 				if (isRightToLeft)
 				{
 					var parentWidth = parent.Width;
@@ -280,7 +280,7 @@ namespace Xamarin.Forms
 			bool isRightToLeft = false;
 			if (parent != null)
 			{
-				isRightToLeft = parent.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft);
+				isRightToLeft = parent.EffectiveFlowDirection.IsRightToLeft();
 				if (isRightToLeft)
 				{
 					var parentWidth = parent.Width;

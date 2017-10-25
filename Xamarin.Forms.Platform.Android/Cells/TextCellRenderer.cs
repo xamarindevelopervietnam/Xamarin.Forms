@@ -64,9 +64,9 @@ namespace Xamarin.Forms.Platform.Android
 			if (VisualElementController == null || (int)Build.VERSION.SdkInt < 17)
 				return;
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				View.LayoutDirection = LayoutDirection.Rtl;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				View.LayoutDirection = LayoutDirection.Ltr;
 		}
 

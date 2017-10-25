@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using UIKit;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Platform.iOS
 {
@@ -90,14 +91,14 @@ namespace Xamarin.Forms.Platform.iOS
 
 #if __MOBILE__
 
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				uiSwitch.SemanticContentAttribute = UISemanticContentAttribute.ForceRightToLeft;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				uiSwitch.SemanticContentAttribute = UISemanticContentAttribute.ForceLeftToRight;
 #else
-			if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft))
+			if (VisualElementController.EffectiveFlowDirection.IsRightToLeft())
 				uiSwitch.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.RightToLeft;
-			else if (VisualElementController.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight))
+			else if (VisualElementController.EffectiveFlowDirection.IsLeftToRight())
 				uiSwitch.UserInterfaceLayoutDirection = UIUserInterfaceLayoutDirection.LeftToRight;
 #endif
 		}

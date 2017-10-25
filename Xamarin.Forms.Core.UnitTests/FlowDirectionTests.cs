@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Core.UnitTests
 {
@@ -17,7 +18,7 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			ViewCell cell = lv.TemplatedItems[0] as ViewCell;
 			IViewController target = cell.View;
-			Assert.IsTrue(target.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "ViewCell View is not RightToLeft");
+			Assert.IsTrue(target.EffectiveFlowDirection.IsRightToLeft(), "ViewCell View is not RightToLeft");
 		}
 
 		[Test]
@@ -29,7 +30,7 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			ViewCell cell = lv.TemplatedItems[0] as ViewCell;
 			IViewController target = cell.View;
-			Assert.IsTrue(target.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "ViewCell View is not RightToLeft");
+			Assert.IsTrue(target.EffectiveFlowDirection.IsRightToLeft(), "ViewCell View is not RightToLeft");
 		}
 
 		[Test]
@@ -46,10 +47,10 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be RightToLeft");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(target.IsRightToLeft(), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(!target.IsLeftToRight(), "EffectiveFlowDirection should be RightToLeft");
 
 			Assert.AreEqual(FlowDirection.MatchParent, ((View)view).FlowDirection);
 			Assert.AreEqual(FlowDirection.RightToLeft, layout2.FlowDirection);
@@ -69,10 +70,10 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be LeftToRight");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsRightToLeft(), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsLeftToRight(), "EffectiveFlowDirection should be LeftToRight");
 
 			Assert.AreEqual(FlowDirection.MatchParent, ((View)view).FlowDirection);
 			Assert.AreEqual(FlowDirection.LeftToRight, layout2.FlowDirection);
@@ -91,18 +92,18 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			layout.FlowDirection = FlowDirection.RightToLeft;
 
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft));
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsRightToLeft());
 
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit));
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft));
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsImplicit());
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsRightToLeft());
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be RightToLeft");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(target.IsRightToLeft(), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(!target.IsLeftToRight(), "EffectiveFlowDirection should be RightToLeft");
 
 			Assert.AreEqual(FlowDirection.MatchParent, ((View)view).FlowDirection);
 			Assert.AreEqual(FlowDirection.MatchParent, layout2.FlowDirection);
@@ -121,14 +122,14 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			layout.FlowDirection = FlowDirection.LeftToRight;
 
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight));
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsLeftToRight());
 
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft));
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsRightToLeft());
 
-			Assume.That(view.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit));
-			Assume.That(view.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft));
+			Assume.That(view.EffectiveFlowDirection.IsImplicit());
+			Assume.That(view.EffectiveFlowDirection.IsRightToLeft());
 
 			var target = ((View)view).FlowDirection;
 
@@ -147,12 +148,12 @@ namespace Xamarin.Forms.Core.UnitTests
 			AddImplicitToRTL(layout2, (View)view);
 
 			layout2.FlowDirection = FlowDirection.RightToLeft;
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "Explicit EffectiveFlowDirection not set on inner layout");
-			Assume.That(view.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "Implicit FlowDirection not set on view");
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsExplicit(), "Explicit EffectiveFlowDirection not set on inner layout");
+			Assume.That(view.EffectiveFlowDirection.IsRightToLeft(), "Implicit FlowDirection not set on view");
 
 			layout.FlowDirection = FlowDirection.LeftToRight;
 			Assume.That(layout2.FlowDirection == FlowDirection.RightToLeft, "Explicit FlowDirection not respected on inner layout");
-			Assume.That(view.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "Implicit FlowDirection not set on view");
+			Assume.That(view.EffectiveFlowDirection.IsRightToLeft(), "Implicit FlowDirection not set on view");
 
 			var target = ((PropertyWatchingView)view).FlowDirectionPropertyChangedCount;
 
@@ -170,15 +171,15 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			((View)view).Parent = layout2;
 
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight));
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsLeftToRight());
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be LeftToRight");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsRightToLeft(), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsLeftToRight(), "EffectiveFlowDirection should be LeftToRight");
 
 			Assert.AreEqual(FlowDirection.MatchParent, ((View)view).FlowDirection);
 		}
@@ -196,11 +197,11 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			layout2.Parent = layout3;
 
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit));
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight));
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsImplicit());
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsLeftToRight());
 
-			Assume.That(view.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit));
-			Assume.That(view.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight));
+			Assume.That(view.EffectiveFlowDirection.IsImplicit());
+			Assume.That(view.EffectiveFlowDirection.IsLeftToRight());
 
 			var target = ((View)view).FlowDirection;
 
@@ -222,10 +223,10 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be RightToLeft");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(target.IsRightToLeft(), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(!target.IsLeftToRight(), "EffectiveFlowDirection should be RightToLeft");
 		}
 
 		[Test]
@@ -240,16 +241,16 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft));
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsRightToLeft());
 
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight));
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsLeftToRight());
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be LeftToRight");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsRightToLeft(), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsLeftToRight(), "EffectiveFlowDirection should be LeftToRight");
 		}
 
 		[Test]
@@ -271,16 +272,16 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft));
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsRightToLeft());
 
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight));
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsLeftToRight());
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be LeftToRight");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsRightToLeft(), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsLeftToRight(), "EffectiveFlowDirection should be LeftToRight");
 		}
 
 		[Test]
@@ -292,16 +293,16 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft));
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsRightToLeft());
 
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout2).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight));
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout2).EffectiveFlowDirection.IsLeftToRight());
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be LeftToRight");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsRightToLeft(), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsLeftToRight(), "EffectiveFlowDirection should be LeftToRight");
 		}
 
 		[Test]
@@ -317,10 +318,10 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be RightToLeft");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(target.IsRightToLeft(), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(!target.IsLeftToRight(), "EffectiveFlowDirection should be RightToLeft");
 		}
 
 		[Test]
@@ -336,10 +337,10 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be RightToLeft");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(target.IsRightToLeft(), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(!target.IsLeftToRight(), "EffectiveFlowDirection should be RightToLeft");
 		}
 
 
@@ -353,10 +354,10 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be RightToLeft");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(target.IsRightToLeft(), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(!target.IsLeftToRight(), "EffectiveFlowDirection should be RightToLeft");
 		}
 
 		[Test]
@@ -369,10 +370,10 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Explicit");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Explicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be LeftToRight");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(!target.IsImplicit(), "EffectiveFlowDirection should be Explicit");
+			Assert.IsTrue(target.IsExplicit(), "EffectiveFlowDirection should be Explicit");
+			Assert.IsTrue(!target.IsRightToLeft(), "EffectiveFlowDirection should be LeftToRight");
+			Assert.IsTrue(target.IsLeftToRight(), "EffectiveFlowDirection should be LeftToRight");
 			Assert.AreEqual(FlowDirection.LeftToRight, ((View)view).FlowDirection);
 		}
 
@@ -382,17 +383,17 @@ namespace Xamarin.Forms.Core.UnitTests
 			IViewController view = ImplicitLeftToRightView();
 			var layout = new StackLayout { FlowDirection = FlowDirection.RightToLeft, Children = { (View)view } };
 
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit));
-			Assume.That(((IViewController)layout).EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft));
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsExplicit());
+			Assume.That(((IViewController)layout).EffectiveFlowDirection.IsRightToLeft());
 
 			Assume.That(((View)view).FlowDirection == FlowDirection.MatchParent);
 
 			var target = view.EffectiveFlowDirection;
 
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.Implicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.Explicit), "EffectiveFlowDirection should be Implicit");
-			Assert.IsTrue(target.HasFlag(EffectiveFlowDirection.RightToLeft), "EffectiveFlowDirection should be RightToLeft");
-			Assert.IsTrue(!target.HasFlag(EffectiveFlowDirection.LeftToRight), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(target.IsImplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(!target.IsExplicit(), "EffectiveFlowDirection should be Implicit");
+			Assert.IsTrue(target.IsRightToLeft(), "EffectiveFlowDirection should be RightToLeft");
+			Assert.IsTrue(!target.IsLeftToRight(), "EffectiveFlowDirection should be RightToLeft");
 			Assert.AreEqual(FlowDirection.MatchParent, ((View)view).FlowDirection);
 		}
 
@@ -416,8 +417,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = child;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "child view FlowDirection should be Explicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "child view FlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "child view FlowDirection should be Explicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "child view FlowDirection should be LeftToRight");
 			Assume.That(child.FlowDirection == FlowDirection.LeftToRight, "child view FlowDirection should be LeftToRight");
 		}
 
@@ -427,8 +428,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = child;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "child view FlowDirection should be Explicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "child view FlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "child view FlowDirection should be Explicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "child view FlowDirection should be LeftToRight");
 			Assume.That(child.FlowDirection == FlowDirection.LeftToRight, "child view FlowDirection should be LeftToRight");
 		}
 
@@ -438,8 +439,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = child;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "child view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "child view EffectiveFlowDirection should be RightToLeft");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "child view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsRightToLeft(), "child view EffectiveFlowDirection should be RightToLeft");
 			Assume.That(child.FlowDirection == FlowDirection.RightToLeft, "child view FlowDirection should be RightToLeft");
 		}
 
@@ -449,8 +450,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = child;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "child view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "child view EffectiveFlowDirection should be RightToLeft");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "child view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsRightToLeft(), "child view EffectiveFlowDirection should be RightToLeft");
 			Assume.That(child.FlowDirection == FlowDirection.RightToLeft, "child view FlowDirection should be RightToLeft");
 		}
 
@@ -460,8 +461,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = child;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit), "child view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "child view EffectiveFlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsImplicit(), "child view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "child view EffectiveFlowDirection should be LeftToRight");
 			Assume.That(child.FlowDirection == FlowDirection.MatchParent, "child view FlowDirection should be MatchParent");
 		}
 
@@ -471,8 +472,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = child;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit), "child view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "child view EffectiveFlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsImplicit(), "child view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "child view EffectiveFlowDirection should be LeftToRight");
 			Assume.That(child.FlowDirection == FlowDirection.MatchParent, "child view FlowDirection should be MatchParent");
 		}
 
@@ -482,8 +483,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = child;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit), "child view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "child view EffectiveFlowDirection should be RightToLeft");
+			Assume.That(controller.EffectiveFlowDirection.IsImplicit(), "child view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsRightToLeft(), "child view EffectiveFlowDirection should be RightToLeft");
 			Assume.That(child.FlowDirection == FlowDirection.MatchParent, "child view FlowDirection should be MatchParent");
 		}
 
@@ -493,8 +494,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = child;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit), "child view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "child view EffectiveFlowDirection should be RightToLeft");
+			Assume.That(controller.EffectiveFlowDirection.IsImplicit(), "child view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsRightToLeft(), "child view EffectiveFlowDirection should be RightToLeft");
 			Assume.That(child.FlowDirection == FlowDirection.MatchParent, "child view FlowDirection should be MatchParent");
 		}
 
@@ -504,8 +505,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = layout;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "Explicit LTR view EffectiveFlowDirection should be Explicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "Explicit LTR view EffectiveFlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "Explicit LTR view EffectiveFlowDirection should be Explicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "Explicit LTR view EffectiveFlowDirection should be LeftToRight");
 			Assume.That(layout.FlowDirection == FlowDirection.LeftToRight, "Explicit LTR view FlowDirection should be LeftToRight");
 			return layout;
 		}
@@ -516,8 +517,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = layout;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "Explicit LTR view EffectiveFlowDirection should be Explicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "Explicit LTR view EffectiveFlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "Explicit LTR view EffectiveFlowDirection should be Explicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "Explicit LTR view EffectiveFlowDirection should be LeftToRight");
 			Assume.That(layout.FlowDirection == FlowDirection.LeftToRight, "Explicit LTR view FlowDirection should be LeftToRight");
 			return layout;
 		}
@@ -528,8 +529,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = view;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "Explicit LTR view EffectiveFlowDirection should be Explicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "Explicit LTR view EffectiveFlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "Explicit LTR view EffectiveFlowDirection should be Explicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "Explicit LTR view EffectiveFlowDirection should be LeftToRight");
 			Assume.That(((View)view).FlowDirection == FlowDirection.LeftToRight, "Explicit LTR view FlowDirection should be LeftToRight");
 
 			return view;
@@ -541,8 +542,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = layout;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "Explicit RTL view EffectiveFlowDirection should be Explicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "Explicit RTL view EffectiveFlowDirection should be RightToLeft");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "Explicit RTL view EffectiveFlowDirection should be Explicit");
+			Assume.That(controller.EffectiveFlowDirection.IsRightToLeft(), "Explicit RTL view EffectiveFlowDirection should be RightToLeft");
 			Assume.That(layout.FlowDirection == FlowDirection.RightToLeft, "Explicit RTL view FlowDirection should be RightToLeft");
 
 			return layout;
@@ -554,8 +555,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = layout;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "Explicit RTL view EffectiveFlowDirection should be Explicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "Explicit RTL view EffectiveFlowDirection should be RightToLeft");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "Explicit RTL view EffectiveFlowDirection should be Explicit");
+			Assume.That(controller.EffectiveFlowDirection.IsRightToLeft(), "Explicit RTL view EffectiveFlowDirection should be RightToLeft");
 			Assume.That(layout.FlowDirection == FlowDirection.RightToLeft, "Explicit RTL view FlowDirection should be RightToLeft");
 
 			return layout;
@@ -567,8 +568,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = view;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Explicit), "Explicit RTL view EffectiveFlowDirection should be Explicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.RightToLeft), "Explicit RTL view EffectiveFlowDirection should be RightToLeft");
+			Assume.That(controller.EffectiveFlowDirection.IsExplicit(), "Explicit RTL view EffectiveFlowDirection should be Explicit");
+			Assume.That(controller.EffectiveFlowDirection.IsRightToLeft(), "Explicit RTL view EffectiveFlowDirection should be RightToLeft");
 			Assume.That(((View)view).FlowDirection == FlowDirection.RightToLeft, "Explicit RTL view FlowDirection should be RightToLeft");
 
 			return view;
@@ -580,8 +581,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = layout;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit), "New view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "New view EffectiveFlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsImplicit(), "New view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "New view EffectiveFlowDirection should be LeftToRight");
 			Assume.That(layout.FlowDirection == FlowDirection.MatchParent, "New view FlowDirection should be MatchParent");
 
 			return layout;
@@ -593,8 +594,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = layout;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit), "New view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "New view EffectiveFlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsImplicit(), "New view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "New view EffectiveFlowDirection should be LeftToRight");
 			Assume.That(layout.FlowDirection == FlowDirection.MatchParent, "New view FlowDirection should be MatchParent");
 
 			return layout;
@@ -606,8 +607,8 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			IViewController controller = view;
 
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.Implicit), "New view EffectiveFlowDirection should be Implicit");
-			Assume.That(controller.EffectiveFlowDirection.HasFlag(EffectiveFlowDirection.LeftToRight), "New view EffectiveFlowDirection should be LeftToRight");
+			Assume.That(controller.EffectiveFlowDirection.IsImplicit(), "New view EffectiveFlowDirection should be Implicit");
+			Assume.That(controller.EffectiveFlowDirection.IsLeftToRight(), "New view EffectiveFlowDirection should be LeftToRight");
 			Assume.That(((View)view).FlowDirection == FlowDirection.MatchParent, "New view FlowDirection should be MatchParent");
 
 			return view;
