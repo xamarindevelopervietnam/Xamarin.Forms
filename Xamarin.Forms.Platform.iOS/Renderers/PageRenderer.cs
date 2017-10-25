@@ -63,6 +63,26 @@ namespace Xamarin.Forms.Platform.iOS
 			Element.Layout(new Rectangle(Element.X, Element.Y, size.Width, size.Height));
 		}
 
+		public override void ViewSafeAreaInsetsDidChange()
+		{
+			if ((Element as Page).On<PlatformConfiguration.iOS>().UseSafeArea())
+			{
+				var insets = NativeView.SafeAreaInsets;
+				var safeArea = NativeView.SafeAreaLayoutGuide;
+				foreach (var item in Element.LogicalChildren)
+				{
+					var x = insets.Left;
+					var y = insets.Top;
+					var width = safeArea.LayoutFrame.Width;
+					var height = safeArea.LayoutFrame.Height;
+					var rect = new Rectangle(x, y, width, height);
+					Console.WriteLine("page renderer " + rect);
+					(item as VisualElement).Layout(rect);
+				}
+			}
+			base.ViewSafeAreaInsetsDidChange();
+		}
+
 		public UIViewController ViewController => _disposed ? null : this;
 
 		public override void ViewDidAppear(bool animated)

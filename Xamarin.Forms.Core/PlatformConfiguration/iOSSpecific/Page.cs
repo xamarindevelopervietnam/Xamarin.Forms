@@ -56,5 +56,28 @@
 			SetPreferredStatusBarUpdateAnimation(config.Element, value);
 			return config;
 		}
+
+		public static readonly BindableProperty UseSafeAreaProperty = BindableProperty.Create("UseSafeArea", typeof(bool), typeof(Page), false);
+
+		public static bool GetUseSafeArea(BindableObject element)
+		{
+			return (bool)element.GetValue(UseSafeAreaProperty);
+		}
+
+		public static void SetUseSafeArea(BindableObject element, bool value)
+		{
+			element.SetValue(UseSafeAreaProperty, value);
+		}
+
+		public static IPlatformElementConfiguration<iOS, FormsElement> SetUseSafeArea(this IPlatformElementConfiguration<iOS, FormsElement> config, bool value)
+		{
+			SetUseSafeArea(config.Element, value);
+			return config;
+		}
+
+		public static bool UseSafeArea(this IPlatformElementConfiguration<iOS, FormsElement> config)
+		{
+			return GetUseSafeArea(config.Element);
+		}
 	}
 }

@@ -2304,6 +2304,50 @@
       <Targets>
         <Target Type="T:Xamarin.Forms.IPlatformElementConfiguration`2" />
       </Targets>
+      <Member MemberName="SetUseSafeArea">
+        <MemberSignature Language="C#" Value="public static Xamarin.Forms.IPlatformElementConfiguration&lt;Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Page&gt; SetUseSafeArea (this Xamarin.Forms.IPlatformElementConfiguration&lt;Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Page&gt; config, bool value);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xamarin.Forms.IPlatformElementConfiguration`2&lt;class Xamarin.Forms.PlatformConfiguration.iOS, class Xamarin.Forms.Page&gt; SetUseSafeArea(class Xamarin.Forms.IPlatformElementConfiguration`2&lt;class Xamarin.Forms.PlatformConfiguration.iOS, class Xamarin.Forms.Page&gt; config, bool value) cil managed" />
+        <MemberType>ExtensionMethod</MemberType>
+        <ReturnValue>
+          <ReturnType>Xamarin.Forms.IPlatformElementConfiguration&lt;Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Page&gt;</ReturnType>
+        </ReturnValue>
+        <Parameters>
+          <Parameter Name="config" Type="Xamarin.Forms.IPlatformElementConfiguration&lt;Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Page&gt;" RefType="this" />
+          <Parameter Name="value" Type="System.Boolean" />
+        </Parameters>
+        <Docs>
+          <param name="config">To be added.</param>
+          <param name="value">To be added.</param>
+          <summary>To be added.</summary>
+        </Docs>
+        <Link Type="Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page" Member="M:Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.SetUseSafeArea(Xamarin.Forms.IPlatformElementConfiguration{Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Page},System.Boolean)" />
+      </Member>
+    </ExtensionMethod>
+    <ExtensionMethod>
+      <Targets>
+        <Target Type="T:Xamarin.Forms.IPlatformElementConfiguration`2" />
+      </Targets>
+      <Member MemberName="UseSafeArea">
+        <MemberSignature Language="C#" Value="public static bool UseSafeArea (this Xamarin.Forms.IPlatformElementConfiguration&lt;Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Page&gt; config);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool UseSafeArea(class Xamarin.Forms.IPlatformElementConfiguration`2&lt;class Xamarin.Forms.PlatformConfiguration.iOS, class Xamarin.Forms.Page&gt; config) cil managed" />
+        <MemberType>ExtensionMethod</MemberType>
+        <ReturnValue>
+          <ReturnType>System.Boolean</ReturnType>
+        </ReturnValue>
+        <Parameters>
+          <Parameter Name="config" Type="Xamarin.Forms.IPlatformElementConfiguration&lt;Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Page&gt;" RefType="this" />
+        </Parameters>
+        <Docs>
+          <param name="config">To be added.</param>
+          <summary>To be added.</summary>
+        </Docs>
+        <Link Type="Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page" Member="M:Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page.UseSafeArea(Xamarin.Forms.IPlatformElementConfiguration{Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Page})" />
+      </Member>
+    </ExtensionMethod>
+    <ExtensionMethod>
+      <Targets>
+        <Target Type="T:Xamarin.Forms.IPlatformElementConfiguration`2" />
+      </Targets>
       <Member MemberName="SetUpdateMode">
         <MemberSignature Language="C#" Value="public static Xamarin.Forms.IPlatformElementConfiguration&lt;Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Picker&gt; SetUpdateMode (this Xamarin.Forms.IPlatformElementConfiguration&lt;Xamarin.Forms.PlatformConfiguration.iOS,Xamarin.Forms.Picker&gt; config, Xamarin.Forms.PlatformConfiguration.iOSSpecific.UpdateMode value);" />
         <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xamarin.Forms.IPlatformElementConfiguration`2&lt;class Xamarin.Forms.PlatformConfiguration.iOS, class Xamarin.Forms.Picker&gt; SetUpdateMode(class Xamarin.Forms.IPlatformElementConfiguration`2&lt;class Xamarin.Forms.PlatformConfiguration.iOS, class Xamarin.Forms.Picker&gt; config, valuetype Xamarin.Forms.PlatformConfiguration.iOSSpecific.UpdateMode value) cil managed" />
