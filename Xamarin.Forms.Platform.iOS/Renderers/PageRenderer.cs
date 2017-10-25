@@ -65,7 +65,8 @@ namespace Xamarin.Forms.Platform.iOS
 
 		public override void ViewSafeAreaInsetsDidChange()
 		{
-			if ((Element as Page).On<PlatformConfiguration.iOS>().UseSafeArea())
+			var page = (Element as Page);
+			if (page != null && page.On<PlatformConfiguration.iOS>().UseSafeArea() && Forms.IsiOS11OrNewer)
 			{
 				var insets = NativeView.SafeAreaInsets;
 				var safeArea = NativeView.SafeAreaLayoutGuide;
