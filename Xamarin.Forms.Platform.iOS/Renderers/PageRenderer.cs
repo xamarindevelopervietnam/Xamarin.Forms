@@ -70,15 +70,7 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				var insets = NativeView.SafeAreaInsets;
 				var safeArea = NativeView.SafeAreaLayoutGuide.LayoutFrame;
-				foreach (var item in Element.LogicalChildren)
-				{
-					var x = insets.Left;
-					var y = insets.Top;
-					var width = safeArea.Width;
-					var height = safeArea.Height;
-					var rect = new Rectangle(x, y, width, height);
-					(item as VisualElement).Layout(rect);
-				}
+				page.Padding = new Thickness(insets.Left, insets.Top, insets.Right, insets.Bottom);
 			}
 			base.ViewSafeAreaInsetsDidChange();
 		}
