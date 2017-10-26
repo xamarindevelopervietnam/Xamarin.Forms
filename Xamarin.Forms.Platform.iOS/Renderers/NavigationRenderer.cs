@@ -8,6 +8,7 @@ using UIKit;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using static Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page;
+using static Xamarin.Forms.PlatformConfiguration.iOSSpecific.NavigationPage;
 using PageUIStatusBarAnimation = Xamarin.Forms.PlatformConfiguration.iOSSpecific.UIStatusBarAnimation;
 using PointF = CoreGraphics.CGPoint;
 using RectangleF = CoreGraphics.CGRect;
@@ -205,6 +206,7 @@ namespace Xamarin.Forms.Platform.iOS
 			UpdateTint();
 			UpdateBarBackgroundColor();
 			UpdateBarTextColor();
+			UpdateUseLargeTitles();
 
 			// If there is already stuff on the stack we need to push it
 			navPage.Pages.ForEach(async p => await PushPageAsync(p, false));
@@ -442,6 +444,9 @@ namespace Xamarin.Forms.Platform.iOS
 				UpdateTranslucent();
 			else if (e.PropertyName == PreferredStatusBarUpdateAnimationProperty.PropertyName)
 				UpdateCurrentPagePreferredStatusBarUpdateAnimation();
+			else if (e.PropertyName == UseLargeTitlesProperty.PropertyName)
+				UpdateUseLargeTitles();
+			
 		}
 
 		void UpdateCurrentPagePreferredStatusBarUpdateAnimation()
@@ -451,6 +456,14 @@ namespace Xamarin.Forms.Platform.iOS
 			PageUIStatusBarAnimation animation = PlatformConfiguration.iOSSpecific.Page.PreferredStatusBarUpdateAnimation(((Page)Element).OnThisPlatform());
 			PlatformConfiguration.iOSSpecific.Page.SetPreferredStatusBarUpdateAnimation(Current.OnThisPlatform(), animation);
 		}
+
+		void UpdateUseLargeTitles()
+		{
+			var navPage = (Element as NavigationPage);
+			if (Forms.IsiOS11OrNewer && navPage != null)
+				NavigationBar.PrefersLargeTitles = navPage.OnThisPlatform().UseLargeTitles();
+		}	
+
 
 		void UpdateTranslucent()
 		{
@@ -598,6 +611,12 @@ namespace Xamarin.Forms.Platform.iOS
 					: barTextColor.ToUIColor();
 				NavigationBar.TitleTextAttributes = titleAttributes;
 			}
+
+			if(Forms.IsiOS11OrNewer)
+			{
+				NavigationBar.LargeTitleTextAttributes = NavigationBar.TitleTextAttributes;      
+			}
+
 
 			var statusBarColorMode = (Element as NavigationPage).OnThisPlatform().GetStatusBarTextColorMode();
 
