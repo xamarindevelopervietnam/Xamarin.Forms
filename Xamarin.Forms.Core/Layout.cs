@@ -128,15 +128,8 @@ namespace Xamarin.Forms
 		{
 			var parent = child.Parent as IFlowDirectionController;
 			bool isRightToLeft = false;
-			if (parent != null)
-			{
-				isRightToLeft = parent.EffectiveFlowDirection.IsRightToLeft();
-				if (isRightToLeft)
-				{
-					var parentWidth = parent.Width;
-					region = new Rectangle(parentWidth - region.Right, region.Y, region.Width, region.Height);
-				}
-			}
+			if (parent != null && (isRightToLeft = parent.EffectiveFlowDirection.IsRightToLeft()))
+				region = new Rectangle(parent.Width - region.Right, region.Y, region.Width, region.Height);
 
 			var view = child as View;
 			if (view == null)
@@ -278,15 +271,8 @@ namespace Xamarin.Forms
 		{
 			var parent = child.Parent as IFlowDirectionController;
 			bool isRightToLeft = false;
-			if (parent != null)
-			{
-				isRightToLeft = parent.EffectiveFlowDirection.IsRightToLeft();
-				if (isRightToLeft)
-				{
-					var parentWidth = parent.Width;
-					region = new Rectangle(parentWidth - region.Right, region.Y, region.Width, region.Height);
-				}
-			}
+			if (parent != null && (isRightToLeft = parent.EffectiveFlowDirection.IsRightToLeft()))
+				region = new Rectangle(parent.Width - region.Right, region.Y, region.Width, region.Height);
 
 			if (region.Size != childSizeRequest.Request)
 			{
