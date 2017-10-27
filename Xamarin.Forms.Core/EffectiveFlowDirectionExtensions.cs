@@ -37,25 +37,25 @@ namespace Xamarin.Forms.Internals
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsRightToLeft(this EffectiveFlowDirection self)
 		{
-			return (self & EffectiveFlowDirection.RightToLeft) != 0;
+			return (self & EffectiveFlowDirection.RightToLeft) == EffectiveFlowDirection.RightToLeft;
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsLeftToRight(this EffectiveFlowDirection self)
 		{
-			return (self & EffectiveFlowDirection.LeftToRight) != 0;
+			return (self & EffectiveFlowDirection.LeftToRight) == EffectiveFlowDirection.LeftToRight;
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsImplicit(this EffectiveFlowDirection self)
 		{
-			return (self & EffectiveFlowDirection.Implicit) != 0;
+			return (self & EffectiveFlowDirection.Implicit) == EffectiveFlowDirection.Implicit;
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsExplicit(this EffectiveFlowDirection self)
 		{
-			return (self & EffectiveFlowDirection.Implicit) != 0;
+			return (self & EffectiveFlowDirection.Explicit) == EffectiveFlowDirection.Explicit;
 		}
 	}
 }
