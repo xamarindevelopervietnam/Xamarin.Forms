@@ -7,7 +7,6 @@ namespace Xamarin.Forms.Internals
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public abstract class DeviceInfo : INotifyPropertyChanged, IDisposable
 	{
-		FlowDirection _currentFlowDirection;
 		DeviceOrientation _currentOrientation;
 		bool _disposed;
 
@@ -19,18 +18,6 @@ namespace Xamarin.Forms.Internals
 				if (Equals(_currentOrientation, value))
 					return;
 				_currentOrientation = value;
-				OnPropertyChanged();
-			}
-		}
-
-		public FlowDirection CurrentFlowDirection
-		{
-			get { return _currentFlowDirection; }
-			set
-			{
-				if (Equals(_currentFlowDirection, value))
-					return;
-				_currentFlowDirection = value;
 				OnPropertyChanged();
 			}
 		}

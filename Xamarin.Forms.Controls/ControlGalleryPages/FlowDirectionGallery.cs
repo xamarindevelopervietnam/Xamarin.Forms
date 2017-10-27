@@ -6,7 +6,7 @@ namespace Xamarin.Forms.Controls
 
 	public class FlowDirectionGalleryLandingPage : ContentPage
 	{
-		FlowDirection DeviceDirection => Device.Info.CurrentFlowDirection;
+		FlowDirection DeviceDirection => Device.FlowDirection;
 
 		public FlowDirectionGalleryLandingPage()
 		{
@@ -104,7 +104,7 @@ namespace Xamarin.Forms.Controls
 
 	public class FlowDirectionGalleryCP : ContentPage
 	{
-		FlowDirection DeviceDirection => Device.Info.CurrentFlowDirection;
+		FlowDirection DeviceDirection => Device.FlowDirection;
 
 		Page ParentPage => (Parent as Page) ?? this;
 
