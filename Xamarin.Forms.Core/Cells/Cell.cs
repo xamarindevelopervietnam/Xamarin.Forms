@@ -35,6 +35,7 @@ namespace Xamarin.Forms
 				OnPropertyChanged(VisualElement.FlowDirectionProperty.PropertyName);
 			}
 		}
+
 		IFlowDirectionController FlowController => this;
 
 		public IList<MenuItem> ContextActions
