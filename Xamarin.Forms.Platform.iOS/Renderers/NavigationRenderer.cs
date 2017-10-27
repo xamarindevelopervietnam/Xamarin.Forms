@@ -808,6 +808,7 @@ namespace Xamarin.Forms.Platform.iOS
 						_child.PropertyChanged += HandleChildPropertyChanged;
 
 					UpdateHasBackButton();
+					UpdateLargeTitles();
 				}
 			}
 
@@ -913,6 +914,8 @@ namespace Xamarin.Forms.Platform.iOS
 					UpdateHasBackButton();
 				else if (e.PropertyName == PrefersStatusBarHiddenProperty.PropertyName)
 					UpdatePrefersStatusBarHidden();
+				else if (e.PropertyName == PlatformConfiguration.iOSSpecific.Page.LargeTitleDisplayProperty.PropertyName)
+					UpdateLargeTitles();
 			}
 
 			void UpdatePrefersStatusBarHidden()
@@ -982,6 +985,27 @@ namespace Xamarin.Forms.Platform.iOS
 				NavigationRenderer n;
 				if (_navigation.TryGetTarget(out n))
 					n.UpdateToolBarVisible();
+			}
+
+			void UpdateLargeTitles()
+			{
+				var page = Child;
+				if (page != null && Forms.IsiOS11OrNewer)
+				{
+					var largeTitleDisplayMode = page.OnThisPlatform().LargeTitleDisplay();
+					switch (largeTitleDisplayMode)
+					{
+						case LargeTitleDisplayMode.Always:
+							NavigationItem.LargeTitleDisplayMode = UINavigationItemLargeTitleDisplayMode.Always;
+							break;
+						case LargeTitleDisplayMode.Automatic:
+							NavigationItem.LargeTitleDisplayMode = UINavigationItemLargeTitleDisplayMode.Automatic;
+							break;
+						case LargeTitleDisplayMode.Never:
+							NavigationItem.LargeTitleDisplayMode = UINavigationItemLargeTitleDisplayMode.Never;
+							break;
+					}
+				}
 			}
 
 			public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()

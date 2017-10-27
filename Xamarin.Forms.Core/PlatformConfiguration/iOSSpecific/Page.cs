@@ -79,5 +79,29 @@
 		{
 			return GetUseSafeArea(config.Element);
 		}
+
+		public static readonly BindableProperty LargeTitleDisplayProperty = BindableProperty.Create(nameof(LargeTitleDisplay), typeof(LargeTitleDisplayMode), typeof(Page), LargeTitleDisplayMode.Automatic);
+
+		public static LargeTitleDisplayMode GetLargeTitleDisplay(BindableObject element)
+		{
+			return (LargeTitleDisplayMode)element.GetValue(LargeTitleDisplayProperty);
+		}
+
+		public static void SetLargeTitleDisplay(BindableObject element, LargeTitleDisplayMode value)
+		{
+			element.SetValue(LargeTitleDisplayProperty, value);
+		}
+
+		public static LargeTitleDisplayMode LargeTitleDisplay(this IPlatformElementConfiguration<iOS, FormsElement> config)
+		{
+			return GetLargeTitleDisplay(config.Element);
+		}
+
+		public static IPlatformElementConfiguration<iOS, FormsElement> SetLargeTitleDisplay(this IPlatformElementConfiguration<iOS, FormsElement> config, LargeTitleDisplayMode value)
+		{
+			SetLargeTitleDisplay(config.Element, value);
+			return config;
+		}
+
 	}
 }
