@@ -57,7 +57,7 @@
 			return config;
 		}
 
-		public static readonly BindableProperty UseSafeAreaProperty = BindableProperty.Create("UseSafeArea", typeof(bool), typeof(Page), false);
+		public static readonly BindableProperty UseSafeAreaProperty = BindableProperty.Create(nameof(UseSafeArea), typeof(bool), typeof(Page), false);
 
 		public static bool GetUseSafeArea(BindableObject element)
 		{
@@ -100,6 +100,36 @@
 		public static IPlatformElementConfiguration<iOS, FormsElement> SetLargeTitleDisplay(this IPlatformElementConfiguration<iOS, FormsElement> config, LargeTitleDisplayMode value)
 		{
 			SetLargeTitleDisplay(config.Element, value);
+			return config;
+		}
+
+		public static readonly BindableProperty SafeAreaInsetsProperty = BindableProperty.Create(nameof(SafeAreaInsets), typeof(Thickness), typeof(Page), default(Thickness), propertyChanged: (bindable, oldValue, newValue) =>
+		{
+			var page = bindable as Xamarin.Forms.Page;
+			if (page.On<iOS>().UseSafeArea())
+			{
+				page.Padding = (Thickness)newValue;
+			}
+		});
+
+		public static Thickness GetSafeAreaInsets(BindableObject element)
+		{
+			return (Thickness)element.GetValue(SafeAreaInsetsProperty);
+		}
+
+		public static void SetSafeAreaInsets(BindableObject element, Thickness value)
+		{
+			element.SetValue(SafeAreaInsetsProperty, value);
+		}
+
+		public static Thickness SafeAreaInsets(this IPlatformElementConfiguration<iOS, FormsElement> config)
+		{
+			return GetSafeAreaInsets(config.Element);
+		}
+
+		public static IPlatformElementConfiguration<iOS, FormsElement> SetSafeAreaInsets(this IPlatformElementConfiguration<iOS, FormsElement> config, Thickness value)
+		{
+			SetSafeAreaInsets(config.Element, value);
 			return config;
 		}
 

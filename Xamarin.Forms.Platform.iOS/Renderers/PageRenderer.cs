@@ -65,12 +65,13 @@ namespace Xamarin.Forms.Platform.iOS
 
 		public override void ViewSafeAreaInsetsDidChange()
 		{
+
 			var page = (Element as Page);
-			if (page != null && page.On<PlatformConfiguration.iOS>().UseSafeArea() && Forms.IsiOS11OrNewer)
+			if (page != null && Forms.IsiOS11OrNewer)
 			{
 				var insets = NativeView.SafeAreaInsets;
-				var safeArea = NativeView.SafeAreaLayoutGuide.LayoutFrame;
-				page.Padding = new Thickness(insets.Left, insets.Top, insets.Right, insets.Bottom);
+				page.On<PlatformConfiguration.iOS>().SetSafeAreaInsets(new Thickness(insets.Left, insets.Top, insets.Right, insets.Bottom));
+			
 			}
 			base.ViewSafeAreaInsetsDidChange();
 		}
