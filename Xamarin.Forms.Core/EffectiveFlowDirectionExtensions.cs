@@ -18,9 +18,9 @@ namespace Xamarin.Forms.Internals
 					return EffectiveFlowDirection.LeftToRight | mode;
 				case FlowDirection.RightToLeft:
 					return EffectiveFlowDirection.RightToLeft | mode;
-			}
-
-			throw new InvalidOperationException($"Cannot convert {self} to {nameof(EffectiveFlowDirection)}.");
+				default:
+					throw new InvalidOperationException($"Cannot convert {self} to {nameof(EffectiveFlowDirection)}.");
+			}			
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
