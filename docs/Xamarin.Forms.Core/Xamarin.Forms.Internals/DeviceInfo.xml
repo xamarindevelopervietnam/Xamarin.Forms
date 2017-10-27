@@ -39,22 +39,6 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="CurrentFlowDirection">
-      <MemberSignature Language="C#" Value="public Xamarin.Forms.FlowDirection CurrentFlowDirection { get; set; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance valuetype Xamarin.Forms.FlowDirection CurrentFlowDirection" />
-      <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>2.0.0.0</AssemblyVersion>
-      </AssemblyInfo>
-      <ReturnValue>
-        <ReturnType>Xamarin.Forms.FlowDirection</ReturnType>
-      </ReturnValue>
-      <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
     <Member MemberName="CurrentOrientation">
       <MemberSignature Language="C#" Value="public Xamarin.Forms.Internals.DeviceOrientation CurrentOrientation { get; set; }" />
       <MemberSignature Language="ILAsm" Value=".property instance valuetype Xamarin.Forms.Internals.DeviceOrientation CurrentOrientation" />
