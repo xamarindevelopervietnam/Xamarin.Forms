@@ -70,6 +70,10 @@ namespace Xamarin.Forms.Platform.iOS
 			if (page != null && Forms.IsiOS11OrNewer)
 			{
 				var insets = NativeView.SafeAreaInsets;
+				if(page.Parent is TabbedPage)
+				{
+					insets.Bottom = 0;
+				}
 				page.On<PlatformConfiguration.iOS>().SetSafeAreaInsets(new Thickness(insets.Left, insets.Top, insets.Right, insets.Bottom));
 			
 			}
