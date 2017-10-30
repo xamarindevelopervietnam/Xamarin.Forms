@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Linq;
-using System.Reflection;
-using Xamarin.Forms.Internals;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Globalization;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
+using Xamarin.Forms.Internals;
+using Xamarin.Forms.Xaml;
 
 namespace Xamarin.Forms
 {
@@ -298,42 +300,27 @@ namespace Xamarin.Forms
 				if (targetRD == null)
 					return null;
 
-				var rootObjectType = (serviceProvider.GetService(typeof(Xaml.IRootObjectProvider)) as Xaml.IRootObjectProvider)?.RootObject.GetType().GetTypeInfo();
+				var rootObjectType = (serviceProvider.GetService(typeof(Xaml.IRootObjectProvider)) as Xaml.IRootObjectProvider)?.RootObject.GetType();
 				if (rootObjectType == null)
 					return null;
 
 				var lineInfo = (serviceProvider.GetService(typeof(Xaml.IXmlLineInfoProvider)) as Xaml.IXmlLineInfoProvider)?.XmlLineInfo;
-				var rootResourceId = rootObjectType.GetCustomAttribute<Xaml.XamlResourceIdAttribute>().ResourceId;
-				var rootNs = rootObjectType.GetCustomAttribute<Xaml.XamlResourceIdAttribute>().RootNamespace;
+				var rootTargetPath = XamlResourceIdAttribute.GetPathForType(rootObjectType);
 				var uri = new Uri(value, UriKind.RelativeOrAbsolute);
-				var resourceId = ComputeResourceId(uri, rootResourceId, rootNs);
-				targetRD.SetAndLoadSource(uri, resourceId, rootObjectType.Assembly, lineInfo);
+				var resourceId = GetResourceId(uri, rootTargetPath,
+											   s => XamlResourceIdAttribute.GetResourceIdForPath(rootObjectType.GetTypeInfo().Assembly, s));
+				targetRD.SetAndLoadSource(uri, resourceId, rootObjectType.GetTypeInfo().Assembly, lineInfo);
 				return uri;
 			}
 
-			internal static string ComputeResourceId(Uri uri, string rootResourceId, string rootNs)
+			internal static string GetResourceId(Uri uri, string rootTargetPath, Func<string,string> getResourceIdForPath)
 			{
-				if (uri.IsAbsoluteUri)
-					return $"{rootNs}{uri.AbsolutePath.Replace('/','.')}";
+				var resourceUri = uri.IsAbsoluteUri ? uri : new Uri($"/{rootTargetPath}/../{uri.OriginalString}", UriKind.Absolute);
 
-				var rootResourceIdLength = rootResourceId.Length;
-				rootResourceIdLength = rootResourceId.LastIndexOf('.', rootResourceIdLength - 1); //drop the .xaml
-				rootResourceIdLength = rootResourceId.LastIndexOf('.', rootResourceIdLength - 1); //drop the resource name
+				//drop the leading '/'
+				var resourcePath = resourceUri.AbsolutePath.Substring(1);
 
-				var path = uri.OriginalString;
-				var pathStartIndex = 0;
-
-				while (true) {
-					if (path.IndexOf("./", pathStartIndex, 2, StringComparison.OrdinalIgnoreCase) == pathStartIndex)
-						pathStartIndex += 2;
-					else if (path.IndexOf("../", pathStartIndex, 3, StringComparison.OrdinalIgnoreCase) == pathStartIndex) {
-						pathStartIndex += 3;
-						rootResourceIdLength = rootResourceId.LastIndexOf('.', rootResourceIdLength - 1); //drop the folder
-					}
-					else
-						break;
-				}
-				return $"{rootResourceId.Substring(0,rootResourceIdLength)}.{path.Substring(pathStartIndex).Replace('/', '.')}";
+				return getResourceIdForPath(resourcePath);
 			}
 
 			object IExtendedTypeConverter.ConvertFrom(CultureInfo culture, object value, IServiceProvider serviceProvider)

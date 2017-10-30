@@ -4,6 +4,10 @@ using System.Linq;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
+using static Mono.Cecil.Cil.Instruction;
+using static Mono.Cecil.Cil.OpCodes;
+
 using Xamarin.Forms.Xaml;
 using Xamarin.Forms.Build.Tasks;
 
@@ -16,16 +20,16 @@ namespace Xamarin.Forms.Core.XamlC
 			var module = context.Body.Method.Module;
 
 			if (string.IsNullOrWhiteSpace(value)) {
-				yield return Instruction.Create(OpCodes.Ldnull);
+				yield return Create(Ldnull);
 				yield break;
 			}
 
 			var uriCtor = module.ImportReference(typeof(Uri)).Resolve().Methods.FirstOrDefault(md => md.IsConstructor && md.Parameters.Count == 2 && md.Parameters[1].ParameterType.FullName == "System.UriKind");
 			var uriCtorRef = module.ImportReference(uriCtor);
 
-			yield return Instruction.Create(OpCodes.Ldstr, value);
-			yield return Instruction.Create(OpCodes.Ldc_I4_0); //UriKind.RelativeOrAbsolute
-			yield return Instruction.Create(OpCodes.Newobj, uriCtorRef);
+			yield return Create(Ldstr, value);
+			yield return Create(Ldc_I4_0); //UriKind.RelativeOrAbsolute
+			yield return Create(Newobj, uriCtorRef);
 		}
 	}
 }
