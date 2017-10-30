@@ -18,6 +18,7 @@ namespace Xamarin.Forms.Controls
 			var appAndroidButton = new Button() { Text = "Application (Android)" };
 			var tbAndroidButton = new Button { Text = "TabbedPage (Android)" };
 			var entryiOSButton = new Button() { Text = "Entry (iOS)" };
+			var largeTitlesiOSButton = new Button() { Text = "Large Title (iOS)" };
 
 			mdpiOSButton.Clicked += (sender, args) => { SetRoot(new MasterDetailPageiOS(new Command(RestoreOriginal))); };
 			mdpWindowsButton.Clicked += (sender, args) => { SetRoot(new MasterDetailPageWindows(new Command(RestoreOriginal))); };
@@ -29,11 +30,11 @@ namespace Xamarin.Forms.Controls
 			appAndroidButton.Clicked += (sender, args) => { SetRoot(new ApplicationAndroid(new Command(RestoreOriginal))); };
 			tbAndroidButton.Clicked += (sender, args) => { SetRoot(new TabbedPageAndroid(new Command(RestoreOriginal))); };
 			entryiOSButton.Clicked += (sender, args) => { Navigation.PushAsync(new EntryPageiOS()); };
-			
+			largeTitlesiOSButton.Clicked += (sender, args) => { Navigation.PushAsync(new LargeTitlesPageiOS(new Command(RestoreOriginal))); };
 
 			Content = new StackLayout
 			{
-				Children = { mdpiOSButton, mdpWindowsButton, npWindowsButton, tbiOSButton, tbWindowsButton, viselemiOSButton, appAndroidButton, tbAndroidButton, entryiOSButton }
+				Children = { mdpiOSButton, mdpWindowsButton, npWindowsButton, tbiOSButton, tbWindowsButton, viselemiOSButton, appAndroidButton, tbAndroidButton, entryiOSButton, largeTitlesiOSButton }
 			};
 		}
 
