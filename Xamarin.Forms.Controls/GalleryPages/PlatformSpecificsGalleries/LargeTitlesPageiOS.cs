@@ -43,9 +43,6 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 						Command = new Command( () =>{
 							var navPage = (Parent as NavigationPage);
 							navPage.On<iOS>().SetUseLargeTitles(!navPage.On<iOS>().UseLargeTitles());
-							//var page = new ContentPage { Title = "Page Title" };
-							//page.On<iOS>().SetLargeTitleDisplay(LargeTitleDisplayMode.Automatic);
-							//await Navigation.PushAsync(page);
 						} )
 					},
 					offscreenPageLimit
