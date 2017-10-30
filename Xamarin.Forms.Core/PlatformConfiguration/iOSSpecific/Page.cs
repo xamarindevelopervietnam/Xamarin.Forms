@@ -57,7 +57,14 @@
 			return config;
 		}
 
-		public static readonly BindableProperty UseSafeAreaProperty = BindableProperty.Create(nameof(UseSafeArea), typeof(bool), typeof(Page), false);
+		public static readonly BindableProperty UseSafeAreaProperty = BindableProperty.Create(nameof(UseSafeArea), typeof(bool), typeof(Page), false, propertyChanged: (bindable, oldValue, newValue) =>
+		{
+			var page = bindable as Xamarin.Forms.Page;
+			if ((bool)oldValue && !(bool)newValue)
+			{
+				page.Padding = default(Thickness);
+			}
+		});
 
 		public static bool GetUseSafeArea(BindableObject element)
 		{
