@@ -149,7 +149,8 @@ namespace Xamarin.Forms.Platform.iOS
 			base.ViewDidLayoutSubviews();
 			UpdateToolBarVisible();
 
-			var navBarFrameBotton = Forms.IsiOS11OrNewer ? View.SafeAreaInsets.Top : NavigationBar.Frame.Bottom;
+			//var navBarFrameBotton = Forms.IsiOS11OrNewer ? View.SafeAreaInsets.Top : NavigationBar.Frame.Bottom;
+			var navBarFrameBotton = NavigationBar.Frame.Bottom;
 
 			var toolbar = _secondaryToolbar;
 			// Use 0 if the NavBar is hidden or will be hidden
