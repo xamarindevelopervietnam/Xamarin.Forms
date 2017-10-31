@@ -30,6 +30,16 @@ namespace Xamarin.Forms.Platform.iOS
 			return cell;
 		}
 
+		public override void SetBackgroundColor(UITableViewCell tableViewCell, Cell cell, UIColor color)
+		{
+			if (cell is ViewCell && Forms.IsiOS11OrNewer)
+			{
+				color = (cell as ViewCell).View.BackgroundColor == Color.Default ? color : (cell as ViewCell).View.BackgroundColor.ToUIColor();
+				tableViewCell.BackgroundColor = color;
+			}
+			base.SetBackgroundColor(tableViewCell, cell, color);
+		}
+
 		static void UpdateIsEnabled(ViewTableCell cell, ViewCell viewCell)
 		{
 			cell.UserInteractionEnabled = viewCell.IsEnabled;
@@ -86,13 +96,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 				if (Forms.IsiOS11OrNewer)
 				{
-					var insets = SafeAreaInsets;
-					var safeArea = SafeAreaLayoutGuide.LayoutFrame;
-					var x = insets.Left;
-					var y = insets.Top;
-					var width = safeArea.Width;
-					var height = safeArea.Height;
-					var rect = new Rectangle(x, y, width, height);
+					var rect = new Rectangle(0, 0, contentFrame.Width, contentFrame.Height);
 					contentFrame = rect.ToRectangleF();
 				}
 

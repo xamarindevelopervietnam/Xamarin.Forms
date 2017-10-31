@@ -12,22 +12,6 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 	{
 		Label safeLimits;
 
-		[Preserve(AllMembers = true)]
-		class Person
-		{
-			public Person(string firstName, string lastName, string city, string state)
-			{
-				FirstName = firstName;
-				LastName = lastName;
-				City = city;
-				State = state;
-			}
-			public string FirstName { get; set; }
-			public string LastName { get; set; }
-			public string City { get; set; }
-			public string State { get; set; }
-		}
-
 		public SafeAreaPageiOS(ICommand restore, Command<Page> setRoot)
 		{
 			Title = "Safe Area";
@@ -75,8 +59,7 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 				{
 					VerticalOptions = LayoutOptions.Fill,
 					HorizontalOptions = LayoutOptions.Fill,
-					Children =
-				{
+					Children = {
 					safeLimits,
 					new Button
 					{
@@ -111,6 +94,36 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 							setRoot.Execute(tabbedPage);
 						})
 					},
+						new Button
+					{
+					Text = "Set TabbedPage and NavigationPage as root",
+						Command = new Command(() =>
+						{
+							var pageSafe = new SafeAreaPageiOS(restore,setRoot);
+							var pageNotSafe = new SafeAreaPageiOS(restore,setRoot);
+							pageNotSafe.On<iOS>().SetUseSafeArea(false);
+							pageNotSafe.Title ="Not Using Safe Area";
+							var tabbedPage = new TabbedPage();
+							tabbedPage.Children.Add(new NavigationPage(pageSafe) { Title = pageSafe.Title});
+							tabbedPage.Children.Add(new NavigationPage(pageNotSafe) { Title = pageNotSafe.Title});
+							setRoot.Execute(tabbedPage);
+						})
+					},
+					new Button
+					{
+						Text = "Set CarouselPage as root",
+						Command = new Command(() =>
+						{
+							var pageSafe = new SafeAreaPageiOS(restore,setRoot);
+							var pageNotSafe = new SafeAreaPageiOS(restore,setRoot);
+							pageNotSafe.On<iOS>().SetUseSafeArea(false);
+							pageNotSafe.Title ="Not Using Safe Area";
+							var carouselPage = new CarouselPage();
+							carouselPage.Children.Add(pageSafe);
+							carouselPage.Children.Add(pageNotSafe);
+							setRoot.Execute(carouselPage);
+						})
+					},
 					new Button
 					{
 						Text = "Toggle use safe area",
@@ -120,7 +133,46 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 					{
 						Text = "ListViewPage with safe area",
 						Command = new Command(()=>{
-							var pageLIST = new ListViewPage("1");
+							var pageLIST = new ListViewPage("1", restore);
+							pageLIST.On<iOS>().SetUseSafeArea(true);
+							setRoot.Execute(pageLIST);
+						})
+					},new Button
+					{
+						Text = "ListViewPage with no safe area",
+						Command = new Command(()=>{
+							var pageLIST = new ListViewPage("1", restore);
+							setRoot.Execute(pageLIST);
+						}),
+
+					},new Button
+					{
+						Text = "ListViewPageGrouping with no safe area",
+						Command = new Command(()=>{
+							var pageLIST = new GroupedListActionsGallery();
+							setRoot.Execute(pageLIST);
+						})
+					},new Button
+					{
+						Text = "ListViewPageGrouping using SafeAreaInsets",
+						Command = new Command(()=>{
+							var pageLIST = new GroupedListActionsGallery();
+								pageLIST.PropertyChanged += (sender, e) => {
+									if(e.PropertyName == "SafeAreaInsets")
+									{
+										var safeAreaInsets = pageLIST.On<iOS>().SafeAreaInsets();
+										//we always want to pad the top when using grouping 
+										pageLIST.Padding = new Thickness(0,safeAreaInsets.Top,0,0);
+									}
+								};
+							setRoot.Execute(pageLIST);
+						})
+					},
+					new Button
+					{
+						Text = "ListViewPageGrouping with safe area",
+						Command = new Command(()=>{
+							var pageLIST = new GroupedListActionsGallery();
 							pageLIST.On<iOS>().SetUseSafeArea(true);
 							setRoot.Execute(pageLIST);
 						})
@@ -129,8 +181,16 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 					{
 						Text = "TableView+TextCell with safe area",
 						Command = new Command(()=>{
-							var pageTable = new TableViewPage();
+							var pageTable = new TableViewPage(restore);
 							pageTable.On<iOS>().SetUseSafeArea(true);
+							setRoot.Execute(pageTable);
+						})
+					},
+					new Button
+					{
+						Text = "TableView+TextCell with no safe area",
+						Command = new Command(()=>{
+							var pageTable = new TableViewPage(restore);
 							setRoot.Execute(pageTable);
 						})
 					},
@@ -190,14 +250,29 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 		[Preserve(AllMembers = true)]
 		class TableViewPage : ContentPage
 		{
-			public TableViewPage()
+			public TableViewPage(ICommand restore)
 			{
-
 				Content = new TableView
 				{
 					Intent = TableIntent.Form,
 					Root = new TableRoot("Table Title") {
 					new TableSection ("Section 1 Title") {
+						new ViewCell {
+							View = new Button{  BackgroundColor = Color.Red, Command = restore, Text = "Back To Gallery", HorizontalOptions = LayoutOptions.Start }
+						}
+					},
+					new TableSection ("Section 1 Title") {
+						new ViewCell {
+							View = new Label { Text = "ViewCell Text with 10 margin top", Margin = new Thickness(0,10,0,0), BackgroundColor = Color.Pink },
+						},
+						new TextCell {
+							Text = "TextCell Text",
+							Detail = "TextCell Detail"
+						},
+						new TextCell {
+							Text = "TextCell Text",
+							Detail = "TextCell Detail"
+						},
 						new TextCell {
 							Text = "TextCell Text",
 							Detail = "TextCell Detail"
@@ -229,7 +304,7 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 			ListView _listview;
 			List<Person> _People = new List<Person>();
 
-			public ListViewPage(string id)
+			public ListViewPage(string id, ICommand restore)
 			{
 				Title = $"List {id}";
 
@@ -240,9 +315,25 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 
 				_listview = new ListView(ListViewCachingStrategy.RecycleElementAndDataTemplate) { ItemTemplate = new DataTemplate(typeof(MViewCell)) };
 				_listview.ItemsSource = _People;
+				_listview.Header = new Button { Text = "Go back To gallery", Command = restore };
 				Content = _listview;
 			}
 		}
-	}
 
+		[Preserve(AllMembers = true)]
+		class Person
+		{
+			public Person(string firstName, string lastName, string city, string state)
+			{
+				FirstName = firstName;
+				LastName = lastName;
+				City = city;
+				State = state;
+			}
+			public string FirstName { get; set; }
+			public string LastName { get; set; }
+			public string City { get; set; }
+			public string State { get; set; }
+		}
+	}
 }
