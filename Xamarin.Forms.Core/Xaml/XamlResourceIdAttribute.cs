@@ -45,5 +45,14 @@ namespace Xamarin.Forms.Xaml
 			}
 			return null;
 		}
+
+		internal static Type GetTypeForResourceId(Assembly assembly, string resourceId)
+		{
+			foreach (var xria in assembly.GetCustomAttributes<XamlResourceIdAttribute>()) {
+				if (xria.ResourceId == resourceId)
+					return xria.Type;
+			}
+			return null;
+		}
 	}
 }

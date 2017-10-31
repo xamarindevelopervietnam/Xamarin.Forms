@@ -63,7 +63,12 @@ namespace Xamarin.Forms
 			if (_mergedWith != null)
 				throw new ArgumentException("Source can not be used with MergedWith");
 
-			_mergedInstance = DependencyService.Get<IResourcesLoader>().CreateResourceDictionary(resourceID, assembly, lineInfo);
+			//this will return a type if the RD as an x:Class element, and codebehind
+			var type = XamlResourceIdAttribute.GetTypeForResourceId(assembly, resourceID);
+			if (type != null) 
+				_mergedInstance = s_instances.GetValue(type, (key) => (ResourceDictionary)Activator.CreateInstance(key));
+			else
+				_mergedInstance = DependencyService.Get<IResourcesLoader>().CreateResourceDictionary(resourceID, assembly, lineInfo);
 			OnValuesChanged(_mergedInstance.ToArray());
 		}
 
