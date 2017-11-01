@@ -149,22 +149,23 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 					{
 						Text = "ListViewPageGrouping with no safe area",
 						Command = new Command(()=>{
-							var pageLIST = new GroupedListActionsGallery();
+							var pageLIST = GetGroupedListView(restore);
+							(pageLIST.Content as ListView).Header = new Button { Text = "Go back To gallery", Command = restore };
 							setRoot.Execute(pageLIST);
 						})
 					},new Button
 					{
 						Text = "ListViewPageGrouping using SafeAreaInsets",
 						Command = new Command(()=>{
-							var pageLIST = new GroupedListActionsGallery();
+								var pageLIST = GetGroupedListView(restore);
 								pageLIST.PropertyChanged += (sender, e) => {
-									if(e.PropertyName == "SafeAreaInsets")
-									{
-										var safeAreaInsets = pageLIST.On<iOS>().SafeAreaInsets();
-										//we always want to pad the top when using grouping 
-										pageLIST.Padding = new Thickness(0,safeAreaInsets.Top,0,0);
-									}
-								};
+								if(e.PropertyName == "SafeAreaInsets")
+								{
+									var safeAreaInsets = pageLIST.On<iOS>().SafeAreaInsets();
+									//we always want to pad the top when using grouping 
+									pageLIST.Padding = new Thickness(0,safeAreaInsets.Top,0,0);
+								}
+							};
 							setRoot.Execute(pageLIST);
 						})
 					},
@@ -172,7 +173,7 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 					{
 						Text = "ListViewPageGrouping with safe area",
 						Command = new Command(()=>{
-							var pageLIST = new GroupedListActionsGallery();
+							var pageLIST = GetGroupedListView(restore);
 							pageLIST.On<iOS>().SetUseSafeArea(true);
 							setRoot.Execute(pageLIST);
 						})
@@ -216,6 +217,14 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 				safeLimits.Text = $" Top:{On<iOS>().SafeAreaInsets().Top} - Bottom:{On<iOS>().SafeAreaInsets().Bottom} - Left:{On<iOS>().SafeAreaInsets().Left} - Right:{On<iOS>().SafeAreaInsets().Right}";
 			}
 			base.OnPropertyChanged(propertyName);
+		}
+
+		ContentPage GetGroupedListView(ICommand restore)
+		{
+			var pageLIST = new GroupedListActionsGallery();
+			NavigationPage.SetHasNavigationBar(pageLIST, true);
+			(pageLIST.Content as ListView).Header = new Button { Text = "Go back To gallery", Command = restore };
+			return pageLIST;
 		}
 
 		[Preserve(AllMembers = true)]

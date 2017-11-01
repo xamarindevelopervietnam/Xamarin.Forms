@@ -96,7 +96,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 				if (Forms.IsiOS11OrNewer)
 				{
-					var rect = new Rectangle(0, 0, contentFrame.Width, contentFrame.Height);
+					var rect = new Rectangle(ContentView.LayoutMargins.Left, 0, contentFrame.Width - ContentView.LayoutMargins.Left, contentFrame.Height);
 					contentFrame = rect.ToRectangleF();
 				}
 
