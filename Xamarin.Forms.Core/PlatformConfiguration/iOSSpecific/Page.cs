@@ -57,7 +57,7 @@
 			return config;
 		}
 
-		public static readonly BindableProperty UseSafeAreaProperty = BindableProperty.Create(nameof(UseSafeArea), typeof(bool), typeof(Page), false, propertyChanged: (bindable, oldValue, newValue) =>
+		public static readonly BindableProperty UseSafeAreaProperty = BindableProperty.Create("UseSafeArea", typeof(bool), typeof(Page), false, propertyChanged: (bindable, oldValue, newValue) =>
 		{
 			var page = bindable as Xamarin.Forms.Page;
 			if ((bool)oldValue && !(bool)newValue)
@@ -82,7 +82,7 @@
 			return config;
 		}
 
-		public static bool UseSafeArea(this IPlatformElementConfiguration<iOS, FormsElement> config)
+		public static bool UsingSafeArea(this IPlatformElementConfiguration<iOS, FormsElement> config)
 		{
 			return GetUseSafeArea(config.Element);
 		}
@@ -110,23 +110,25 @@
 			return config;
 		}
 
-		public static readonly BindableProperty SafeAreaInsetsProperty = BindableProperty.Create(nameof(SafeAreaInsets), typeof(Thickness), typeof(Page), default(Thickness), propertyChanged: (bindable, oldValue, newValue) =>
+		static readonly BindablePropertyKey SafeAreaInsetsPropertyKey = BindableProperty.CreateReadOnly(nameof(SafeAreaInsets), typeof(Thickness), typeof(Page), default(Thickness), propertyChanged: (bindable, oldValue, newValue) =>
 		{
 			var page = bindable as Xamarin.Forms.Page;
-			if (page.On<iOS>().UseSafeArea())
+			if (page.On<iOS>().UsingSafeArea())
 			{
 				page.Padding = (Thickness)newValue;
 			}
 		});
+
+		public static readonly BindableProperty SafeAreaInsetsProperty = SafeAreaInsetsPropertyKey.BindableProperty;
 
 		public static Thickness GetSafeAreaInsets(BindableObject element)
 		{
 			return (Thickness)element.GetValue(SafeAreaInsetsProperty);
 		}
 
-		public static void SetSafeAreaInsets(BindableObject element, Thickness value)
+		static void SetSafeAreaInsets(BindableObject element, Thickness value)
 		{
-			element.SetValue(SafeAreaInsetsProperty, value);
+			element.SetValue(SafeAreaInsetsPropertyKey, value);
 		}
 
 		public static Thickness SafeAreaInsets(this IPlatformElementConfiguration<iOS, FormsElement> config)

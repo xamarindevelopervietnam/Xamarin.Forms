@@ -127,7 +127,7 @@ namespace Xamarin.Forms.Controls.GalleryPages.PlatformSpecificsGalleries
 					new Button
 					{
 						Text = "Toggle use safe area",
-						Command = new Command(() => On<iOS>().SetUseSafeArea(!On<iOS>().UseSafeArea()))
+						Command = new Command(() => On<iOS>().SetUseSafeArea(!On<iOS>().UsingSafeArea()))
 					},
 					new Button
 					{
