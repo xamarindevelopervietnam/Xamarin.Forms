@@ -12,7 +12,7 @@ using Xamarin.Forms.Platform;
 namespace Xamarin.Forms
 {
 	[RenderWith(typeof(_PageRenderer))]
-	public class Page : VisualElement, ILayout, IPageController, IElementConfiguration<Page>
+	public class Page : VisualElement, ILayout, IPageController, IElementConfiguration<Page>, IPaddingElement
 	{
 		public const string BusySetSignalName = "Xamarin.BusySet";
 
@@ -26,11 +26,7 @@ namespace Xamarin.Forms
 
 		public static readonly BindableProperty IsBusyProperty = BindableProperty.Create("IsBusy", typeof(bool), typeof(Page), false, propertyChanged: (bo, o, n) => ((Page)bo).OnPageBusyChanged());
 
-		public static readonly BindableProperty PaddingProperty = BindableProperty.Create("Padding", typeof(Thickness), typeof(Page), default(Thickness), propertyChanged: (bindable, old, newValue) =>
-		{
-			var layout = (Page)bindable;
-			layout.UpdateChildrenLayout();
-		});
+		public static readonly BindableProperty PaddingProperty = PaddingElement.PaddingProperty;
 
 		public static readonly BindableProperty TitleProperty = BindableProperty.Create("Title", typeof(string), typeof(Page), null);
 
@@ -76,8 +72,18 @@ namespace Xamarin.Forms
 
 		public Thickness Padding
 		{
-			get { return (Thickness)GetValue(PaddingProperty); }
-			set { SetValue(PaddingProperty, value); }
+			get { return (Thickness)GetValue(PaddingElement.PaddingProperty); }
+			set { SetValue(PaddingElement.PaddingProperty, value); }
+		}
+
+		Thickness IPaddingElement.PaddingDefaultValueCreator()
+		{
+			return default(Thickness);
+		}
+
+		void IPaddingElement.OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
+		{
+			UpdateChildrenLayout();
 		}
 
 		public string Title
@@ -258,9 +264,7 @@ namespace Xamarin.Forms
 
 				if (c.Bounds != startingLayout[i])
 				{
-					EventHandler handler = LayoutChanged;
-					if (handler != null)
-						handler(this, EventArgs.Empty);
+					LayoutChanged?.Invoke(this, EventArgs.Empty);
 					return;
 				}
 			}
@@ -305,12 +309,12 @@ namespace Xamarin.Forms
 				MessagingCenter.Send(this, BusySetSignalName, true);
 
 			OnAppearing();
-			EventHandler handler = Appearing;
-			if (handler != null)
-				handler(this, EventArgs.Empty);
+			Appearing?.Invoke(this, EventArgs.Empty);
 
 			var pageContainer = this as IPageContainer<Page>;
 			pageContainer?.CurrentPage?.SendAppearing();
+
+			FindApplication(this)?.OnPageAppearing(this);
 		}
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -328,9 +332,17 @@ namespace Xamarin.Forms
 			pageContainer?.CurrentPage?.SendDisappearing();
 
 			OnDisappearing();
-			EventHandler handler = Disappearing;
-			if (handler != null)
-				handler(this, EventArgs.Empty);
+			Disappearing?.Invoke(this, EventArgs.Empty);
+
+			FindApplication(this)?.OnPageDisappearing(this);
+		}
+
+		Application FindApplication(Element element)
+		{
+			if (element == null)
+				return null;
+
+			return (element.Parent is Application app) ? app : FindApplication(element.Parent);
 		}
 
 		void InternalChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

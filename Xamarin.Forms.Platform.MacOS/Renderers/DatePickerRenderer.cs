@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using AppKit;
 using Foundation;
 
@@ -22,7 +21,7 @@ namespace Xamarin.Forms.Platform.MacOS
 			{
 				if (Control == null)
 				{
-					_picker = new NSDatePicker
+					_picker = new FormsNSDatePicker
 					{
 						DatePickerMode = NSDatePickerMode.Single,
 						TimeZone = new NSTimeZone("UTC"),
@@ -30,6 +29,7 @@ namespace Xamarin.Forms.Platform.MacOS
 						DatePickerElements = NSDatePickerElementFlags.YearMonthDateDay
 					};
 					_picker.ValidateProposedDateValue += HandleValueChanged;
+					(_picker as FormsNSDatePicker).FocusChanged += ControlFocusChanged;
 					_defaultTextColor = _picker.TextColor;
 					_defaultBackgroundColor = _picker.BackgroundColor;
 
@@ -40,6 +40,7 @@ namespace Xamarin.Forms.Platform.MacOS
 			UpdateDateFromModel();
 			UpdateMaximumDate();
 			UpdateMinimumDate();
+			UpdateFont();
 			UpdateTextColor();
 		}
 
@@ -57,6 +58,10 @@ namespace Xamarin.Forms.Platform.MacOS
 			else if (e.PropertyName == DatePicker.TextColorProperty.PropertyName ||
 					e.PropertyName == VisualElement.IsEnabledProperty.PropertyName)
 				UpdateTextColor();
+			else if (e.PropertyName == Picker.FontSizeProperty.PropertyName ||
+				e.PropertyName == Picker.FontFamilyProperty.PropertyName ||
+				e.PropertyName == Picker.FontAttributesProperty.PropertyName)
+				UpdateFont();
 		}
 
 		protected override void Dispose(bool disposing)
@@ -64,7 +69,10 @@ namespace Xamarin.Forms.Platform.MacOS
 			if (disposing && !_disposed)
 			{
 				if (_picker != null)
+				{
 					_picker.ValidateProposedDateValue -= HandleValueChanged;
+					(_picker as FormsNSDatePicker).FocusChanged -= ControlFocusChanged;
+				}
 
 				_disposed = true;
 			}
@@ -84,21 +92,17 @@ namespace Xamarin.Forms.Platform.MacOS
 				Control.BackgroundColor = color.ToNSColor();
 		}
 
+		void ControlFocusChanged(object sender, BoolEventArgs e)
+		{
+			ElementController?.SetValueFromRenderer(VisualElement.IsFocusedPropertyKey, e.Value);
+		}
+
 		void HandleValueChanged(object sender, NSDatePickerValidatorEventArgs e)
 		{
 			if (Control == null || Element == null)
 				return;
-			ElementController?.SetValueFromRenderer(DatePicker.DateProperty, _picker.DateValue.ToDateTime().Date);
-		}
 
-		void OnEnded(object sender, EventArgs eventArgs)
-		{
-			ElementController?.SetValueFromRenderer(VisualElement.IsFocusedPropertyKey, false);
-		}
-
-		void OnStarted(object sender, EventArgs eventArgs)
-		{
-			ElementController?.SetValueFromRenderer(VisualElement.IsFocusedPropertyKey, true);
+			ElementController?.SetValueFromRenderer(DatePicker.DateProperty, e.ProposedDateValue.ToDateTime().Date);
 		}
 
 		void UpdateDateFromModel()
@@ -107,6 +111,14 @@ namespace Xamarin.Forms.Platform.MacOS
 				return;
 			if (_picker.DateValue.ToDateTime().Date != Element.Date.Date)
 				_picker.DateValue = Element.Date.ToNSDate();
+		}
+
+		void UpdateFont()
+		{
+			if (Control == null || Element == null)
+				return;
+
+			Control.Font = Element.ToNSFont();
 		}
 
 		void UpdateMaximumDate()

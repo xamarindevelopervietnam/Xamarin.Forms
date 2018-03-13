@@ -12,6 +12,7 @@ namespace Xamarin.Forms.Platform.iOS
 		UIPickerView _picker;
 		UIColor _defaultTextColor;
 		bool _disposed;
+		bool _useLegacyColorManagement;
 
 		IElementController ElementController => Element as IElementController;
 
@@ -49,13 +50,19 @@ namespace Xamarin.Forms.Platform.iOS
 					entry.InputView = _picker;
 					entry.InputAccessoryView = toolbar;
 
+					entry.InputView.AutoresizingMask = UIViewAutoresizing.FlexibleHeight;
+					entry.InputAccessoryView.AutoresizingMask = UIViewAutoresizing.FlexibleHeight;
+
 					_defaultTextColor = entry.TextColor;
+					
+					_useLegacyColorManagement = e.NewElement.UseLegacyColorManagement();
 
 					SetNativeControl(entry);
 				}
 
 				_picker.Model = new PickerSource(this);
 
+				UpdateFont();
 				UpdatePicker();
 				UpdateTextColor();
 
@@ -70,10 +77,12 @@ namespace Xamarin.Forms.Platform.iOS
 			base.OnElementPropertyChanged(sender, e);
 			if (e.PropertyName == Picker.TitleProperty.PropertyName)
 				UpdatePicker();
-			if (e.PropertyName == Picker.SelectedIndexProperty.PropertyName)
+			else if (e.PropertyName == Picker.SelectedIndexProperty.PropertyName)
 				UpdatePicker();
-			if (e.PropertyName == Picker.TextColorProperty.PropertyName || e.PropertyName == VisualElement.IsEnabledProperty.PropertyName)
+			else if (e.PropertyName == Picker.TextColorProperty.PropertyName || e.PropertyName == VisualElement.IsEnabledProperty.PropertyName)
 				UpdateTextColor();
+			else if (e.PropertyName == Picker.FontAttributesProperty.PropertyName || e.PropertyName == Picker.FontFamilyProperty.PropertyName || e.PropertyName == Picker.FontSizeProperty.PropertyName)
+				UpdateFont();
 		}
 
 		void OnEditing(object sender, EventArgs eventArgs)
@@ -87,6 +96,8 @@ namespace Xamarin.Forms.Platform.iOS
 		void OnEnded(object sender, EventArgs eventArgs)
 		{
 			var s = (PickerSource)_picker.Model;
+			if (s.SelectedIndex == -1)
+				return;
 			if (s.SelectedIndex != _picker.SelectedRowInComponent(0))
 			{
 				_picker.Select(s.SelectedIndex, 0, false);
@@ -102,6 +113,11 @@ namespace Xamarin.Forms.Platform.iOS
 		void RowsCollectionChanged(object sender, EventArgs e)
 		{
 			UpdatePicker();
+		}
+
+		void UpdateFont()
+		{
+			Control.Font = Element.ToUIFont();
 		}
 
 		void UpdatePicker()
@@ -148,10 +164,13 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			var textColor = Element.TextColor;
 
-			if (textColor.IsDefault || !Element.IsEnabled)
+			if (textColor.IsDefault || (!Element.IsEnabled && _useLegacyColorManagement))
 				Control.TextColor = _defaultTextColor;
 			else
 				Control.TextColor = textColor.ToUIColor();
+
+			// HACK This forces the color to update; there's probably a more elegant way to make this happen
+			Control.Text = Control.Text;
 		}
 
 		protected override void Dispose(bool disposing)
@@ -182,6 +201,7 @@ namespace Xamarin.Forms.Platform.iOS
 				{
 					Control.EditingDidBegin -= OnStarted;
 					Control.EditingDidEnd -= OnEnded;
+					Control.EditingChanged -= OnEditing;
 				}
 
 				if(Element != null)

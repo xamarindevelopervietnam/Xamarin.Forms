@@ -40,8 +40,6 @@ namespace Xamarin.Forms.Controls
 			case Device.Android:
 				fontName = "sans-serif-light";
 				break;
-			case Device.WinPhone:
-			case Device.WinRT:
 			case Device.UWP:
 				fontName = "Comic Sans MS";
 				break;
@@ -61,7 +59,9 @@ namespace Xamarin.Forms.Controls
 				BorderColor = Color.Black,
 				BackgroundColor = Color.Purple,
 				BorderWidth = 5,
+#pragma warning disable 0618
 				BorderRadius = 5
+#pragma warning restore
 			};
 			var timer = new Button { Text = "Timer" };
 			var busy = new Button { Text = "Toggle Busy" };

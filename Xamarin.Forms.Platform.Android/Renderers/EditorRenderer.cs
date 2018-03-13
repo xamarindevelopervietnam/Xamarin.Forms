@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Android.Content;
 using Android.Content.Res;
+using Android.OS;
 using Android.Text;
 using Android.Text.Method;
 using Android.Util;
@@ -14,8 +17,8 @@ namespace Xamarin.Forms.Platform.Android
 {
 	public class EditorRenderer : ViewRenderer<Editor, FormsEditText>, ITextWatcher
 	{
-		ColorStateList _defaultColors;
 		bool _disposed;
+		TextColorSwitcher _textColorSwitcher;
 
 		public EditorRenderer(Context context) : base(context)
 		{
@@ -28,7 +31,7 @@ namespace Xamarin.Forms.Platform.Android
 			AutoPackage = false;
 		}
 
-        IEditorController ElementController => Element;
+		IEditorController ElementController => Element;
 
 		void ITextWatcher.AfterTextChanged(IEditable s)
 		{
@@ -66,16 +69,22 @@ namespace Xamarin.Forms.Platform.Android
 				SetNativeControl(edit);
 				edit.AddTextChangedListener(this);
 				edit.OnKeyboardBackPressed += OnKeyboardBackPressed;
+
+				var useLegacyColorManagement = e.NewElement.UseLegacyColorManagement();
+				_textColorSwitcher = new TextColorSwitcher(edit.TextColors, useLegacyColorManagement);
 			}
 
 			edit.SetSingleLine(false);
 			edit.Gravity = GravityFlags.Top;
+			if ((int)Build.VERSION.SdkInt > 16)
+				edit.TextAlignment = global::Android.Views.TextAlignment.ViewStart;
 			edit.SetHorizontallyScrolling(false);
 
 			UpdateText();
 			UpdateInputType();
 			UpdateTextColor();
 			UpdateFont();
+			UpdateMaxLength();
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -83,6 +92,8 @@ namespace Xamarin.Forms.Platform.Android
 			if (e.PropertyName == Editor.TextProperty.PropertyName)
 				UpdateText();
 			else if (e.PropertyName == InputView.KeyboardProperty.PropertyName)
+				UpdateInputType();
+			else if (e.PropertyName == InputView.IsSpellCheckEnabledProperty.PropertyName)
 				UpdateInputType();
 			else if (e.PropertyName == Editor.TextColorProperty.PropertyName)
 				UpdateTextColor();
@@ -92,6 +103,8 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateFont();
 			else if (e.PropertyName == Editor.FontSizeProperty.PropertyName)
 				UpdateFont();
+			else if (e.PropertyName == InputView.MaxLengthProperty.PropertyName)
+				UpdateMaxLength();
 
 			base.OnElementPropertyChanged(sender, e);
 		}
@@ -127,7 +140,7 @@ namespace Xamarin.Forms.Platform.Android
 		internal override void OnNativeFocusChanged(bool hasFocus)
 		{
 			if (Element.IsFocused && !hasFocus) // Editor has requested an unfocus, fire completed event
-                ElementController.SendCompleted();
+				ElementController.SendCompleted();
 		}
 
 		void UpdateFont()
@@ -143,6 +156,14 @@ namespace Xamarin.Forms.Platform.Android
 			var keyboard = model.Keyboard;
 
 			edit.InputType = keyboard.ToInputType() | InputTypes.TextFlagMultiLine;
+			if (!(keyboard is Internals.CustomKeyboard) && model.IsSet(InputView.IsSpellCheckEnabledProperty))
+			{
+				if ((edit.InputType & InputTypes.TextFlagNoSuggestions) != InputTypes.TextFlagNoSuggestions)
+				{
+					if (!model.IsSpellCheckEnabled)
+						edit.InputType = edit.InputType | InputTypes.TextFlagNoSuggestions;
+				}
+			}
 
 			if (keyboard == Keyboard.Numeric)
 			{
@@ -163,34 +184,36 @@ namespace Xamarin.Forms.Platform.Android
 
 		void UpdateTextColor()
 		{
-			if (Element.TextColor.IsDefault)
-			{
-				if (_defaultColors == null)
-				{
-					// This control has always had the default colors; nothing to update
-					return;
-				}
-
-				// This control is being set back to the default colors
-				Control.SetTextColor(_defaultColors);
-			}
-			else
-			{
-				if (_defaultColors == null)
-				{
-					// Keep track of the default colors so we can return to them later
-					// and so we can preserve the default disabled color
-					_defaultColors = Control.TextColors;
-				}
-
-				Control.SetTextColor(Element.TextColor.ToAndroidPreserveDisabled(_defaultColors));
-			}
+			_textColorSwitcher?.UpdateTextColor(Control, Element.TextColor);
 		}
 
 		void OnKeyboardBackPressed(object sender, EventArgs eventArgs)
 		{
 			ElementController?.SendCompleted();
 			Control?.ClearFocus();
+		}
+
+		void UpdateMaxLength()
+		{
+			var currentFilters = new List<IInputFilter>(Control?.GetFilters() ?? new IInputFilter[0]);
+
+			for (var i = 0; i < currentFilters.Count; i++)
+			{
+				if (currentFilters[i] is InputFilterLengthFilter)
+				{
+					currentFilters.RemoveAt(i);
+					break;
+				}
+			}
+
+			currentFilters.Add(new InputFilterLengthFilter(Element.MaxLength));
+
+			Control?.SetFilters(currentFilters.ToArray());
+
+			var currentControlText = Control?.Text;
+
+			if (currentControlText.Length > Element.MaxLength)
+				Control.Text = currentControlText.Substring(0, Element.MaxLength);
 		}
 	}
 }

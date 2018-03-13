@@ -6,13 +6,16 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Xamarin.Forms.Xaml;
+using Xamarin.Forms.Build.Tasks;
 
 namespace Xamarin.Forms.Core.XamlC
 {
 	class ThicknessTypeConverter : ICompiledTypeConverter
 	{
-		public IEnumerable<Instruction> ConvertFromString(string value, ModuleDefinition module, BaseNode node)
+		public IEnumerable<Instruction> ConvertFromString(string value, ILContext context, BaseNode node)
 		{
+			var module = context.Body.Method.Module;
+
 			if (!string.IsNullOrEmpty(value)) {
 				double l, t, r, b;
 				var thickness = value.Split(',');
@@ -42,9 +45,8 @@ namespace Xamarin.Forms.Core.XamlC
 		{
 			foreach (var d in args)
 				yield return Instruction.Create(OpCodes.Ldc_R8, d);
-			var thicknessCtor = module.ImportReference(typeof(Thickness)).Resolve().Methods.FirstOrDefault(md => md.IsConstructor && md.Parameters.Count == args.Length);
-			var thicknessCtorRef = module.ImportReference(thicknessCtor);
-			yield return Instruction.Create(OpCodes.Newobj, thicknessCtorRef);
+			yield return Instruction.Create(OpCodes.Newobj, module.ImportCtorReference(("Xamarin.Forms.Core", "Xamarin.Forms", "Thickness"),
+																					   paramCount: args.Length));
 		}
 	}
 	

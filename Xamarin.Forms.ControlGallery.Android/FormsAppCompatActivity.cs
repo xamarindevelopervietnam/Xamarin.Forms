@@ -1,6 +1,5 @@
 ﻿#if !FORMS_APPLICATION_ACTIVITY && !PRE_APPLICATION_CLASS
 
-using System.Diagnostics;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -10,6 +9,7 @@ using Xamarin.Forms.Controls;
 using Xamarin.Forms.Controls.Issues;
 using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms.Platform.Android.AppLinks;
+using System.Linq;
 
 namespace Xamarin.Forms.ControlGallery.Android
 {
@@ -39,9 +39,7 @@ namespace Xamarin.Forms.ControlGallery.Android
 			//Window.AddFlags(WindowManagerFlags.Fullscreen | WindowManagerFlags.TurnScreenOn);
 
 			base.OnCreate(bundle);
-
-			if (!Debugger.IsAttached)
-				Insights.Initialize(App.InsightsApiKey, ApplicationContext);
+			
 
 #if TEST_EXPERIMENTAL_RENDERERS
 			Forms.SetFlags("FastRenderers_Experimental");
@@ -84,6 +82,12 @@ namespace Xamarin.Forms.ControlGallery.Android
 			SetUpForceRestartTest();
 
 			LoadApplication(_app);
+			if (Forms.Flags.Contains("FastRenderers_Experimental"))
+			{
+				var masterPage = ((_app.MainPage as MasterDetailPage)?.Master as ContentPage);
+				if (masterPage != null)
+					masterPage.Content = new Label { Text = "Fast Renderers" };
+			}
 		}
 
 		

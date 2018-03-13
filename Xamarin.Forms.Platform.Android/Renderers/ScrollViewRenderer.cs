@@ -16,6 +16,8 @@ namespace Xamarin.Forms.Platform.Android
 	{
 		ScrollViewContainer _container;
 		HorizontalScrollView _hScrollView;
+		ScrollBarVisibility _defaultHorizontalScrollVisibility = 0;
+		ScrollBarVisibility _defaultVerticalScrollVisibility = 0;
 		bool _isAttached;
 		internal bool ShouldSkipOnTouch;
 		bool _isBidirectional;
@@ -88,6 +90,8 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateBackgroundColor();
 				UpdateOrientation();
 				UpdateIsEnabled();
+				UpdateHorizontalScrollBarVisibility();
+				UpdateVerticalScrollBarVisibility();
 
 				element.SendViewInitialized(this);
 
@@ -153,19 +157,20 @@ namespace Xamarin.Forms.Platform.Android
 			if (_isBidirectional && !Element.InputTransparent)
 			{
 				float dX = LastX - ev.RawX;
-				float dY = LastY - ev.RawY;
+
 				LastY = ev.RawY;
 				LastX = ev.RawX;
 				if (ev.Action == MotionEventActions.Move)
 				{
-					ScrollBy(0, (int)dY);
 					foreach (AHorizontalScrollView child in this.GetChildrenOfType<AHorizontalScrollView>())
 					{
 						child.ScrollBy((int)dX, 0);
 						break;
 					}
+					// Fall through to base.OnTouchEvent, it'll take care of the Y scrolling				
 				}
 			}
+
 			return base.OnTouchEvent(ev);
 		}
 
@@ -277,6 +282,10 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateOrientation();
 			else if (e.PropertyName == VisualElement.IsEnabledProperty.PropertyName)
 				UpdateIsEnabled();
+			else if (e.PropertyName == ScrollView.HorizontalScrollBarVisibilityProperty.PropertyName)
+				UpdateHorizontalScrollBarVisibility();
+			else if (e.PropertyName == ScrollView.VerticalScrollBarVisibilityProperty.PropertyName)
+				UpdateVerticalScrollBarVisibility();
 		}
 
 		void UpdateIsEnabled()
@@ -422,6 +431,39 @@ namespace Xamarin.Forms.Platform.Android
 					AddView(_container);
 				}
 			}
+		}
+
+		void UpdateHorizontalScrollBarVisibility()
+		{
+			if (_hScrollView != null)
+			{
+				if (_defaultHorizontalScrollVisibility == 0)
+				{
+					_defaultHorizontalScrollVisibility = _hScrollView.HorizontalScrollBarEnabled ? ScrollBarVisibility.Always : ScrollBarVisibility.Never;
+				}
+
+				var newHorizontalScrollVisiblility = _view.HorizontalScrollBarVisibility;
+
+				if (newHorizontalScrollVisiblility == ScrollBarVisibility.Default)
+				{
+					newHorizontalScrollVisiblility = _defaultHorizontalScrollVisibility;
+				}
+
+				_hScrollView.HorizontalScrollBarEnabled = newHorizontalScrollVisiblility == ScrollBarVisibility.Always;
+			}
+		}
+
+		void UpdateVerticalScrollBarVisibility()
+		{
+			if (_defaultVerticalScrollVisibility == 0)
+				_defaultVerticalScrollVisibility = VerticalScrollBarEnabled ? ScrollBarVisibility.Always : ScrollBarVisibility.Never;
+
+			var newVerticalScrollVisibility = _view.VerticalScrollBarVisibility;
+
+			if (newVerticalScrollVisibility == ScrollBarVisibility.Default)
+				newVerticalScrollVisibility = _defaultVerticalScrollVisibility;
+
+			VerticalScrollBarEnabled = newVerticalScrollVisibility == ScrollBarVisibility.Always;
 		}
 	}
 }

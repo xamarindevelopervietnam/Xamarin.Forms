@@ -45,6 +45,7 @@ namespace Xamarin.Forms.Xaml.Internals
 			get { return xamlFileProvider; }
 			internal set {
 				xamlFileProvider = value;
+				Xamarin.Forms.DesignMode.IsDesignModeEnabled = true;
 				//¯\_(ツ)_/¯ the previewer forgot to set that bool
 				DoNotThrowOnExceptions = value != null;
 			}
@@ -76,8 +77,9 @@ namespace Xamarin.Forms.Xaml
 					//Skip until element
 					if (reader.NodeType == XmlNodeType.Whitespace)
 						continue;
-					if (reader.NodeType != XmlNodeType.Element)
-					{
+					if (reader.NodeType == XmlNodeType.XmlDeclaration)
+						continue;
+					if (reader.NodeType != XmlNodeType.Element) {
 						Debug.WriteLine("Unhandled node {0} {1} {2}", reader.NodeType, reader.Name, reader.Value);
 						continue;
 					}
@@ -105,8 +107,10 @@ namespace Xamarin.Forms.Xaml
 					//Skip until element
 					if (reader.NodeType == XmlNodeType.Whitespace)
 						continue;
+					if (reader.NodeType == XmlNodeType.XmlDeclaration)
+						continue;
 					if (reader.NodeType != XmlNodeType.Element) {
-						Debug.WriteLine ("Unhandled node {0} {1} {2}", reader.NodeType, reader.Name, reader.Value);
+						Debug.WriteLine("Unhandled node {0} {1} {2}", reader.NodeType, reader.Name, reader.Value);
 						continue;
 					}
 
@@ -150,16 +154,8 @@ namespace Xamarin.Forms.Xaml
 				return xaml;
 #pragma warning restore 0618
 
-			var typeInfo = type.GetTypeInfo();
-			var assembly = typeInfo.Assembly;
-
-			string resourceId = null;
-			foreach (var xria in assembly.GetCustomAttributes<XamlResourceIdAttribute>()) {
-				if (xria.Type != type)
-					continue;
-				resourceId = xria.ResourceId;
-				break;
-			}
+			var assembly = type.GetTypeInfo().Assembly;
+			var resourceId = XamlResourceIdAttribute.GetResourceIdForType(type);
 
 			if (resourceId == null)
 				return LegacyGetXamlForType(type);
@@ -172,7 +168,7 @@ namespace Xamarin.Forms.Xaml
 					xaml = null;
 			}
 
-			var alternateXaml = ResourceLoader.ResourceProvider?.Invoke(resourceId);
+			var alternateXaml = ResourceLoader.ResourceProvider?.Invoke(assembly.GetName(), XamlResourceIdAttribute.GetPathForType(type));
 			return alternateXaml ?? xaml;
 		}
 

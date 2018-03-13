@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Xamarin.Forms.Xaml
 {
-	internal class RegisterXNamesVisitor : IXamlNodeVisitor
+	class RegisterXNamesVisitor : IXamlNodeVisitor
 	{
 		public RegisterXNamesVisitor(HydrationContext context)
 		{
@@ -16,6 +16,7 @@ namespace Xamarin.Forms.Xaml
 		public bool StopOnDataTemplate => true;
 		public bool StopOnResourceDictionary => false;
 		public bool VisitNodeOnDataTemplate => false;
+		public bool SkipChildren(INode node, INode parentNode) => false;
 
 		public void Visit(ValueNode node, INode parentNode)
 		{
@@ -31,6 +32,9 @@ namespace Xamarin.Forms.Xaml
 					throw ae;
 				throw new XamlParseException($"An element with the name \"{(string)node.Value}\" already exists in this NameScope", node);
 			}
+			var element = Values[parentNode] as Element;
+			if (element != null)
+				element.StyleId = element.StyleId ?? (string)node.Value;
 		}
 
 		public void Visit(MarkupNode node, INode parentNode)

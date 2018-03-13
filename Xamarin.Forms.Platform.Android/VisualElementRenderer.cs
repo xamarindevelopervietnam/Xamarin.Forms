@@ -7,6 +7,7 @@ using Android.Support.V4.View;
 using Android.Views;
 using Xamarin.Forms.Internals;
 using AView = Android.Views.View;
+using Xamarin.Forms.Platform.Android.FastRenderers;
 
 namespace Xamarin.Forms.Platform.Android
 {
@@ -20,8 +21,8 @@ namespace Xamarin.Forms.Platform.Android
 		string _defaultContentDescription;
 		bool? _defaultFocusable;
 		string _defaultHint;
-		int? _defaultLabelFor;
-		
+		bool _inputTransparentInherited = true;
+
 		VisualElementPackager _packager;
 		PropertyChangedEventHandler _propertyChangeHandler;
 
@@ -51,11 +52,11 @@ namespace Xamarin.Forms.Platform.Android
 
 		public override bool DispatchTouchEvent(MotionEvent e)
 		{
-			if (InputTransparent)
+			if (InputTransparent && _inputTransparentInherited)
 			{
 				// If the Element is InputTransparent, this ViewGroup will be marked InputTransparent
-				// If we're InputTransparent we should return false on all touch events without
-				// even bothering to send them to the child Views
+				// If we're InputTransparent and our transparency should be applied to our child controls,
+				// we return false on all touch events without even bothering to send them to the child Views
 
 				return false; // IOW, not handled
 			}
@@ -129,9 +130,10 @@ namespace Xamarin.Forms.Platform.Android
 
 		public void UpdateLayout()
 		{
-			Performance.Start();
+			var reference = Guid.NewGuid().ToString();
+			Performance.Start(reference);
 			Tracker?.UpdateLayout();
-			Performance.Stop();
+			Performance.Stop(reference);
 		}
 
 		public ViewGroup ViewGroup => this;
@@ -148,7 +150,8 @@ namespace Xamarin.Forms.Platform.Android
 			TElement oldElement = Element;
 			Element = element;
 
-			Performance.Start();
+			var reference = Guid.NewGuid().ToString();
+			Performance.Start(reference);
 
 			if (oldElement != null)
 			{
@@ -192,8 +195,9 @@ namespace Xamarin.Forms.Platform.Android
 			SetContentDescription();
 			SetFocusable();
 			UpdateInputTransparent();
+			UpdateInputTransparentInherited();
 
-			Performance.Stop();
+			Performance.Stop(reference);
 		}
 
 		/// <summary>
@@ -279,7 +283,8 @@ namespace Xamarin.Forms.Platform.Android
 				SetFocusable();
 			else if (e.PropertyName == VisualElement.InputTransparentProperty.PropertyName)
 				UpdateInputTransparent();
-			
+			else if (e.PropertyName == Xamarin.Forms.Layout.CascadeInputTransparentProperty.PropertyName)
+				UpdateInputTransparentInherited();
 
 			ElementPropertyChanged?.Invoke(this, e);
 		}
@@ -289,7 +294,6 @@ namespace Xamarin.Forms.Platform.Android
 			if (Element == null)
 				return;
 
-			ReadOnlyCollection<Element> children = ((IElementController)Element).LogicalChildren;
 			UpdateLayout(((IElementController)Element).LogicalChildren);
 		}
 
@@ -314,69 +318,29 @@ namespace Xamarin.Forms.Platform.Android
 		}
 
 		protected virtual void SetAutomationId(string id)
-		{
-			ContentDescription = id;
-		}
+			=> AutomationPropertiesProvider.SetAutomationId(this, Element, id);
 
 		protected virtual void SetContentDescription()
-		{
-			if (Element == null)
-				return;
-
-			if (SetHint())
-				return;
-
-			if (_defaultContentDescription == null)
-				_defaultContentDescription = ContentDescription;
-
-			var elemValue = FastRenderers.AutomationPropertiesProvider.ConcatenateNameAndHelpText(Element);
-
-			if (!string.IsNullOrWhiteSpace(elemValue))
-				ContentDescription = elemValue;
-			else
-				ContentDescription = _defaultContentDescription;
-		}
+			=> AutomationPropertiesProvider.SetContentDescription(this, Element, ref _defaultContentDescription, ref _defaultHint);
 
 		protected virtual void SetFocusable()
-		{
-			if (Element == null)
-				return;
-
-			if (!_defaultFocusable.HasValue)
-				_defaultFocusable = Focusable;
-
-			Focusable = (bool)((bool?)Element.GetValue(AutomationProperties.IsInAccessibleTreeProperty) ?? _defaultFocusable);
-		}
-
-		protected virtual bool SetHint()
-		{
-			if (Element == null)
-				return false;
-
-			var textView = this as global::Android.Widget.TextView;
-			if (textView == null)
-				return false;
-
-			// Let the specified Title/Placeholder take precedence, but don't set the ContentDescription (won't work anyway)
-			if (((Element as Picker)?.Title ?? (Element as Entry)?.Placeholder ?? (Element as EntryCell)?.Placeholder) != null)
-				return true;
-
-			if (_defaultHint == null)
-				_defaultHint = textView.Hint;
-
-			var elemValue = FastRenderers.AutomationPropertiesProvider.ConcatenateNameAndHelpText(Element);
-
-			if (!string.IsNullOrWhiteSpace(elemValue))
-				textView.Hint = elemValue;
-			else
-				textView.Hint = _defaultHint;
-
-			return true;
-		}
+			=> AutomationPropertiesProvider.SetFocusable(this, Element, ref _defaultFocusable);
 
 		void UpdateInputTransparent()
 		{
 			InputTransparent = Element.InputTransparent;
+		}
+
+		void UpdateInputTransparentInherited()
+		{
+			var layout = Element as Layout;
+
+			if (layout == null)
+			{
+				return;
+			}
+
+			_inputTransparentInherited = layout.CascadeInputTransparent;
 		}
 
 		protected void SetPackager(VisualElementPackager packager)
@@ -401,11 +365,6 @@ namespace Xamarin.Forms.Platform.Android
 		}
 
 		void IVisualElementRenderer.SetLabelFor(int? id)
-		{
-			if (_defaultLabelFor == null)
-				_defaultLabelFor = LabelFor;
-
-			LabelFor = (int)(id ?? _defaultLabelFor);
-		}
+			=> LabelFor = id ?? LabelFor;
 	}
 }

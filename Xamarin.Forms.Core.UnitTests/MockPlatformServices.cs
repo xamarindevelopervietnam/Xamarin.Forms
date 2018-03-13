@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using System.IO;
 using System.Threading;
 using System.Reflection;
 using System.IO.IsolatedStorage;
@@ -9,18 +8,17 @@ using Xamarin.Forms;
 using Xamarin.Forms.Core.UnitTests;
 using System.Security.Cryptography;
 using System.Text;
-using Xamarin.Forms.Internals;
-
-#if WINDOWS_PHONE
-using Xamarin.Forms.Platform.WinPhone;
-#endif
+using FileMode = System.IO.FileMode;
+using FileAccess = System.IO.FileAccess;
+using FileShare = System.IO.FileShare;
+using Stream = System.IO.Stream;
 
 [assembly:Dependency (typeof(MockDeserializer))]
 [assembly:Dependency (typeof(MockResourcesProvider))]
 
 namespace Xamarin.Forms.Core.UnitTests
 {
-	internal class MockPlatformServices : IPlatformServices
+	internal class MockPlatformServices : Internals.IPlatformServices
 	{
 		Action<Action> invokeOnMainThread;
 		Action<Uri> openUriAction;
@@ -92,7 +90,7 @@ namespace Xamarin.Forms.Core.UnitTests
 				invokeOnMainThread (action);
 		}
 
-		public Ticker CreateTicker()
+		public Internals.Ticker CreateTicker()
 		{
 			return new MockTicker();
 		}
@@ -121,16 +119,12 @@ namespace Xamarin.Forms.Core.UnitTests
 			return AppDomain.CurrentDomain.GetAssemblies ();
 		}
 
-		public IIsolatedStorageFile GetUserStoreForApplication ()
+		public Internals.IIsolatedStorageFile GetUserStoreForApplication ()
 		{
-#if WINDOWS_PHONE
-			return new MockIsolatedStorageFile (IsolatedStorageFile.GetUserStoreForApplication ());
-#else
 			return new MockIsolatedStorageFile (IsolatedStorageFile.GetUserStoreForAssembly ());
-#endif
 		}
 
-		public class MockIsolatedStorageFile : IIsolatedStorageFile
+		public class MockIsolatedStorageFile : Internals.IIsolatedStorageFile
 		{
 			readonly IsolatedStorageFile isolatedStorageFile;
 			public MockIsolatedStorageFile (IsolatedStorageFile isolatedStorageFile)
@@ -149,15 +143,15 @@ namespace Xamarin.Forms.Core.UnitTests
 				return Task.FromResult (true);
 			}
 
-			public Task<Stream> OpenFileAsync (string path, Internals.FileMode mode, Internals.FileAccess access)
+			public Task<Stream> OpenFileAsync (string path, FileMode mode, FileAccess access)
 			{
-				Stream stream = isolatedStorageFile.OpenFile (path, (System.IO.FileMode)mode, (System.IO.FileAccess)access);
+				Stream stream = isolatedStorageFile.OpenFile (path, mode, access);
 				return Task.FromResult (stream);
 			}
 
-			public Task<Stream> OpenFileAsync (string path, Internals.FileMode mode, Internals.FileAccess access, Internals.FileShare share)
+			public Task<Stream> OpenFileAsync (string path, FileMode mode, FileAccess access, FileShare share)
 			{
-				Stream stream = isolatedStorageFile.OpenFile (path, (System.IO.FileMode)mode, (System.IO.FileAccess)access, (System.IO.FileShare)share);
+				Stream stream = isolatedStorageFile.OpenFile (path, mode, access, share);
 				return Task.FromResult (stream);
 			}
 
@@ -178,7 +172,7 @@ namespace Xamarin.Forms.Core.UnitTests
 		}
 	}
 
-	internal class MockDeserializer : IDeserializer
+	internal class MockDeserializer : Internals.IDeserializer
 	{
 		public Task<IDictionary<string, object>> DeserializePropertiesAsync ()
 		{
@@ -191,9 +185,9 @@ namespace Xamarin.Forms.Core.UnitTests
 		}
 	}
 
-	internal class MockResourcesProvider : ISystemResourcesProvider
+	internal class MockResourcesProvider : Internals.ISystemResourcesProvider
 	{
-		public IResourceDictionary GetSystemResources ()
+		public Internals.IResourceDictionary GetSystemResources ()
 		{
 			var dictionary = new ResourceDictionary ();
 			Style style;
@@ -231,7 +225,7 @@ namespace Xamarin.Forms.Core.UnitTests
 		}
 	}
 
-	internal class MockTicker : Ticker
+	internal class MockTicker : Internals.Ticker
 	{
 		bool _enabled;
 

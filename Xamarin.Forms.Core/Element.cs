@@ -9,7 +9,7 @@ using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
-	public abstract class Element : BindableObject, IElement, INameScope, IElementController
+	public abstract partial class Element : BindableObject, IElement, INameScope, IElementController
 	{
 
 		public static readonly BindableProperty MenuProperty = BindableProperty.CreateAttached(nameof(Menu), typeof(Menu), typeof(Element), null);
@@ -161,13 +161,11 @@ namespace Xamarin.Forms
 				if (_platform == value)
 					return;
 				_platform = value;
-				if (PlatformSet != null)
-					PlatformSet(this, EventArgs.Empty);
+				PlatformSet?.Invoke(this, EventArgs.Empty);
 				foreach (Element descendant in Descendants())
 				{
 					descendant._platform = _platform;
-					if (descendant.PlatformSet != null)
-						descendant.PlatformSet(this, EventArgs.Empty);
+					descendant.PlatformSet?.Invoke(this, EventArgs.Empty);
 				}
 			}
 		}
@@ -369,10 +367,9 @@ namespace Xamarin.Forms
 			if (Platform != null)
 				child.Platform = Platform;
 
-			child.ApplyBindings();
+			child.ApplyBindings(skipBindingContext: false, fromBindingContextChanged:true);
 
-			if (ChildAdded != null)
-				ChildAdded(this, new ElementEventArgs(child));
+			ChildAdded?.Invoke(this, new ElementEventArgs(child));
 
 			OnDescendantAdded(child);
 			foreach (Element element in child.Descendants())
@@ -383,8 +380,7 @@ namespace Xamarin.Forms
 		{
 			child.Parent = null;
 
-			if (ChildRemoved != null)
-				ChildRemoved(child, new ElementEventArgs(child));
+			ChildRemoved?.Invoke(child, new ElementEventArgs(child));
 
 			OnDescendantRemoved(child);
 			foreach (Element element in child.Descendants())
@@ -394,6 +390,7 @@ namespace Xamarin.Forms
 		protected virtual void OnParentSet()
 		{
 			ParentSet?.Invoke(this, EventArgs.Empty);
+			ApplyStyleSheetsOnParentSet();
 		}
 
 		protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -428,9 +425,12 @@ namespace Xamarin.Forms
 			}
 		}
 
-		internal void OnParentResourcesChanged(object sender, ResourcesChangedEventArgs e)
+		internal virtual void OnParentResourcesChanged(object sender, ResourcesChangedEventArgs e)
 		{
-			OnParentResourcesChanged(e.Values);
+			if (e == ResourcesChangedEventArgs.StyleSheets)
+				ApplyStyleSheetsOnParentSet();
+			else
+				OnParentResourcesChanged(e.Values);
 		}
 
 		internal virtual void OnParentResourcesChanged(IEnumerable<KeyValuePair<string, object>> values)
@@ -447,7 +447,7 @@ namespace Xamarin.Forms
 			base.OnRemoveDynamicResource(property);
 		}
 
-		internal void OnResourcesChanged(object sender, ResourcesChangedEventArgs e)
+		internal virtual void OnResourcesChanged(object sender, ResourcesChangedEventArgs e)
 		{
 			OnResourcesChanged(e.Values);
 		}
@@ -502,6 +502,27 @@ namespace Xamarin.Forms
 		}
 
 		internal event EventHandler ParentSet;
+
+		internal static void SetFlowDirectionFromParent(Element child)
+		{
+			IFlowDirectionController controller = child as IFlowDirectionController;
+			if (controller == null)
+				return;
+
+			if (controller.EffectiveFlowDirection.IsImplicit())
+			{
+				var parentView = child.Parent as IFlowDirectionController;
+				if (parentView == null)
+					return;
+
+				var flowDirection = parentView.EffectiveFlowDirection.ToFlowDirection();
+
+				if (flowDirection != controller.EffectiveFlowDirection.ToFlowDirection())
+				{
+					controller.EffectiveFlowDirection = flowDirection.ToEffectiveFlowDirection();
+				}
+			}
+		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public event EventHandler PlatformSet;
@@ -616,8 +637,7 @@ namespace Xamarin.Forms
 
 		void OnDescendantAdded(Element child)
 		{
-			if (DescendantAdded != null)
-				DescendantAdded(this, new ElementEventArgs(child));
+			DescendantAdded?.Invoke(this, new ElementEventArgs(child));
 
 			if (RealParent != null)
 				RealParent.OnDescendantAdded(child);
@@ -625,8 +645,7 @@ namespace Xamarin.Forms
 
 		void OnDescendantRemoved(Element child)
 		{
-			if (DescendantRemoved != null)
-				DescendantRemoved(this, new ElementEventArgs(child));
+			DescendantRemoved?.Invoke(this, new ElementEventArgs(child));
 
 			if (RealParent != null)
 				RealParent.OnDescendantRemoved(child);

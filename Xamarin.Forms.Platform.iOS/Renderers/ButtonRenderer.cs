@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Foundation;
 using UIKit;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using SizeF = CoreGraphics.CGSize;
 
 namespace Xamarin.Forms.Platform.iOS
@@ -13,6 +14,7 @@ namespace Xamarin.Forms.Platform.iOS
 		UIColor _buttonTextColorDefaultDisabled;
 		UIColor _buttonTextColorDefaultHighlighted;
 		UIColor _buttonTextColorDefaultNormal;
+		bool _useLegacyColorManagement;
 		bool _titleChanged;
 		SizeF _titleSize;
 
@@ -22,6 +24,7 @@ namespace Xamarin.Forms.Platform.iOS
 		// Under iOS Classic Resharper wants to suggest this use the built-in type ref
 		// but under iOS that suggestion won't work
 		readonly nfloat _minimumButtonHeight = 44; // Apple docs
+		readonly nfloat _defaultCornerRadius = 5;
 
 		static readonly UIControlState[] s_controlStates = { UIControlState.Normal, UIControlState.Highlighted, UIControlState.Disabled };
 
@@ -56,11 +59,13 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				if (Control == null)
 				{
-					SetNativeControl(new UIButton(UIButtonType.System));
+					SetNativeControl(CreateNativeControl());
 
 					Debug.Assert(Control != null, "Control != null");
 
 					SetControlPropertiesFromProxy();
+
+					_useLegacyColorManagement = e.NewElement.UseLegacyColorManagement();
 
 					_buttonTextColorDefaultNormal = Control.TitleColor(UIControlState.Normal);
 					_buttonTextColorDefaultHighlighted = Control.TitleColor(UIControlState.Highlighted);
@@ -78,6 +83,11 @@ namespace Xamarin.Forms.Platform.iOS
 			}
 		}
 
+		protected override UIButton CreateNativeControl()
+		{
+			return new UIButton(UIButtonType.System);
+		}
+
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			base.OnElementPropertyChanged(sender, e);
@@ -88,7 +98,7 @@ namespace Xamarin.Forms.Platform.iOS
 				UpdateTextColor();
 			else if (e.PropertyName == Button.FontProperty.PropertyName)
 				UpdateFont();
-			else if (e.PropertyName == Button.BorderWidthProperty.PropertyName || e.PropertyName == Button.BorderRadiusProperty.PropertyName || e.PropertyName == Button.BorderColorProperty.PropertyName)
+			else if (e.PropertyName == Button.BorderWidthProperty.PropertyName || e.PropertyName == Button.CornerRadiusProperty.PropertyName || e.PropertyName == Button.BorderColorProperty.PropertyName)
 				UpdateBorder();
 			else if (e.PropertyName == Button.ImageProperty.PropertyName)
 				UpdateImage();
@@ -139,7 +149,13 @@ namespace Xamarin.Forms.Platform.iOS
 				uiButton.Layer.BorderColor = button.BorderColor.ToCGColor();
 
 			uiButton.Layer.BorderWidth = Math.Max(0f, (float)button.BorderWidth);
-			uiButton.Layer.CornerRadius = button.BorderRadius;
+
+			nfloat cornerRadius = _defaultCornerRadius;
+
+			if (button.IsSet(Button.CornerRadiusProperty) && button.CornerRadius != (int)Button.CornerRadiusProperty.DefaultValue)
+				cornerRadius = button.CornerRadius;
+
+			uiButton.Layer.CornerRadius = cornerRadius;
 		}
 
 		void UpdateFont()
@@ -201,11 +217,13 @@ namespace Xamarin.Forms.Platform.iOS
 			}
 			else
 			{
-				Control.SetTitleColor(Element.TextColor.ToUIColor(), UIControlState.Normal);
-				Control.SetTitleColor(Element.TextColor.ToUIColor(), UIControlState.Highlighted);
-				Control.SetTitleColor(_buttonTextColorDefaultDisabled, UIControlState.Disabled);
-				
-				Control.TintColor = Element.TextColor.ToUIColor();
+				var color = Element.TextColor.ToUIColor();
+
+				Control.SetTitleColor(color, UIControlState.Normal);
+				Control.SetTitleColor(color, UIControlState.Highlighted);
+				Control.SetTitleColor(_useLegacyColorManagement ? _buttonTextColorDefaultDisabled : color, UIControlState.Disabled);
+
+				Control.TintColor = color;
 			}
 		}
 
